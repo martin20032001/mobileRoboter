@@ -52,3 +52,5 @@ def aStarVisualize(planner, solution, ax = None, nodeSize = 300):
                                    node_size=300,
                                    node_color='#DD0000',  ax = ax)
     nx.draw_networkx_labels(graph,pos,labels={solution[-1]: "G"},  ax = ax)
+
+

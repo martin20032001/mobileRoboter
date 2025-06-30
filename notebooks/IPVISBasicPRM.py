@@ -8,6 +8,9 @@ License is based on Creative Commons: Attribution-NonCommercial 4.0 Internationa
 
 import matplotlib.pyplot as plt
 import networkx as nx
+from matplotlib import animation
+from IPython.display import HTML, display
+import numpy as np
 
 
 def basicPRMVisualize(planner, solution, ax = None, nodeSize = 100):
@@ -101,3 +104,66 @@ def basicPRMVisualize3D(planner, solution, ax = None, nodeSize = 100):
             edge_end = graph_positions[edge[1]]
 
             ax.plot([edge_start[0], edge_end[0]], [edge_start[1], edge_end[1]],[edge_start[2], edge_end[2]], '-r')
+
+
+def animatePRM3D(planner, solution, interpolated_path, title="3D Animation", interval=100):
+    graph = planner.graph
+    collChecker = planner._collisionChecker
+
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_title(title)
+
+    # --- Hindernisse zeichnen (angenommen, drawObstacles(ax) unterstützt 3D) ---
+    if hasattr(collChecker, "drawObstacles"):
+        collChecker.drawObstacles(ax)
+
+    # --- Graph darstellen ---
+    graph_positions = nx.get_node_attributes(graph, 'pos')
+    for node_index, node_position in graph_positions.items():
+        ax.plot([node_position[0]], [node_position[1]], [node_position[2]], 'bo', markersize=2)
+        for edge in graph.edges(node_index):
+            if hash(edge[1]) > hash(edge[0]):
+                continue
+            p1 = graph_positions[edge[0]]
+            p2 = graph_positions[edge[1]]
+            ax.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]], ':b', linewidth=0.5)
+
+    # --- Lösungspfad darstellen ---
+    for i in range(len(solution) - 1):
+        p1 = graph.nodes[solution[i]]["pos"]
+        p2 = graph.nodes[solution[i + 1]]["pos"]
+        ax.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]], '-r', linewidth=2)
+
+    # --- Roboter-Objekt: Kugel/Punkt/Marker ---
+    robot_marker, = ax.plot([], [], [], 'ro', markersize=6)
+
+    # --- Textanzeige ---
+    coord_text = ax.text2D(0.05, 0.95, "", transform=ax.transAxes)
+
+    # --- Limits setzen (z. B. über die Szenenlimits oder automatisch) ---
+    all_pos = np.array(list(graph_positions.values()))
+    ax.set_xlim(np.min(all_pos[:, 0]) - 5, np.max(all_pos[:, 0]) + 5)
+    ax.set_ylim(np.min(all_pos[:, 1]) - 5, np.max(all_pos[:, 1]) + 5)
+    ax.set_zlim(np.min(all_pos[:, 2]) - 5, np.max(all_pos[:, 2]) + 5)
+
+    def init():
+        robot_marker.set_data([], [])
+        robot_marker.set_3d_properties([])
+        coord_text.set_text("")
+        return robot_marker, coord_text
+
+    def animate(i):
+        i = min(i, len(interpolated_path) - 1)
+        pos = interpolated_path[i]
+        robot_marker.set_data([pos[0]], [pos[1]])
+        robot_marker.set_3d_properties([pos[2]])
+        coord_text.set_text(f"x = {pos[0]:.2f}, y = {pos[1]:.2f}, θ = {pos[2]:.2f}")
+        return robot_marker, coord_text
+
+    ani = animation.FuncAnimation(
+        fig, animate, init_func=init, frames=len(interpolated_path),
+        interval=interval, blit=True
+    )
+    display(HTML(ani.to_jshtml()))
+    plt.close(fig)
