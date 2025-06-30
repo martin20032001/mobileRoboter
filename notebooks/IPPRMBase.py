@@ -21,13 +21,13 @@ class PRMBase(PlanerBase):
         super(PRMBase,self).__init__(collChecker)
 
     def _getRandomPosition(self):
-        limits = self._collisionChecker.getEnvironmentLimits()   
+        limits = self._collisionChecker.getEnvironmentLimits()        
         pos = [random.uniform(limit[0],limit[1]) for limit in limits]
         return pos
     
     @IPPerfMonitor
     def _getRandomFreePosition(self):
-        pos = self._getRandomPosition()        
+        pos = self._getRandomPosition()
         while self._collisionChecker.pointInCollision(pos):
             pos = self._getRandomPosition()
         return pos
