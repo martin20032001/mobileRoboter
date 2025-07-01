@@ -1,7 +1,7 @@
-from shapely.geometry import Polygon, Point
-import shapely.affinity
+from shapely.geometry import Polygon
+from shapely.affinity import rotate, translate
 from IPEnvironment import CollisionChecker
-from shapely import plotting
+from IPPerfMonitor import IPPerfMonitor
 
 class MobileRobotCollisionChecker(CollisionChecker):
     def __init__(self, robot_shape: Polygon, scene: dict, limits=[[0, 22], [0, 22], [0, 360]]):
@@ -13,44 +13,33 @@ class MobileRobotCollisionChecker(CollisionChecker):
         return self.dim
 
     def _get_transformed_robot(self, pos):
-        assert len(pos) in [2, 3], "Position must be 2D (x,y) or 3D (x,y,theta)"
         x, y = pos[0], pos[1]
         theta = pos[2] if len(pos) == 3 else 0
-        robot = shapely.affinity.rotate(self.robot_shape, theta, origin='centroid', use_radians=False)
-        robot = shapely.affinity.translate(robot, xoff=x, yoff=y)
-        return robot
+        robot = rotate(self.robot_shape, theta, origin='centroid', use_radians=False)
+        return translate(robot, xoff=x, yoff=y)
 
+    @IPPerfMonitor
     def pointInCollision(self, pos):
         robot = self._get_transformed_robot(pos)
-
-        # --- 1. Prüfe, ob der Roboter innerhalb der Grenzen liegt ---
         minx, miny, maxx, maxy = robot.bounds
+
         if (minx < self.limits[0][0] or maxx > self.limits[0][1] or
             miny < self.limits[1][0] or maxy > self.limits[1][1]):
-            return True  # Außerhalb der Grenzen → Kollision
+            return True
 
-        # --- 2. Prüfe auf Hinderniskollision ---
-        for obstacle in self.scene.values():
-            if obstacle.intersects(robot):
-                return True
+        return any(obstacle.intersects(robot) for obstacle in self.scene.values())
 
-        return False
-
-
+    @IPPerfMonitor
     def lineInCollision(self, startPos, endPos):
-        import numpy as np
-        p1 = np.array(startPos)
-        p2 = np.array(endPos)
-        k = 40
-        for i in range(k + 1):
-            alpha = i / k
-            p = p1 + alpha * (p2 - p1)
+        from numpy import linspace
+        for alpha in linspace(0, 1, 41):
+            p = [(1 - alpha) * s + alpha * e for s, e in zip(startPos, endPos)]
             if self.pointInCollision(p):
                 return True
         return False
-    
-    def drawObstacles(self, ax, inWorkspace=False):
-        for key, value in self.scene.items():
-            plotting.plot_polygon(value, add_points=False, color='red', ax=ax)
 
-    
+
+    def drawObstacles(self, ax, inWorkspace=False):
+        from shapely.plotting import plot_polygon
+        for obstacle in self.scene.values():
+            plot_polygon(obstacle, ax=ax, add_points=False, color='red')
