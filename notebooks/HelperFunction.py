@@ -8,6 +8,11 @@ import matplotlib.pyplot as plt
 from IPython.display import clear_output
 import time
 from tqdm.notebook import tqdm
+import matplotlib.pyplot as plt
+import numpy as np
+from IPython.display import display, HTML
+from matplotlib import rc
+import os
 
 class SceneBuilder:
     """
@@ -364,13 +369,9 @@ def run_benchmark(planner_cls, planner_name, config, benchmarks, max_attempts=10
         })
     return results
 
-    
-def animate_saved_result(results, selected_benchmark, selected_planner, steps_per_segment=3):
-    import matplotlib.pyplot as plt
-    import numpy as np
-    from IPython.display import display, HTML
+def animate_saved_result(results, selected_benchmark, selected_planner,
+                        steps_per_segment=3, save_path: str = None, fps: int = 10):
 
-    # Finde gespeicherten Datensatz
     match = next((r for r in results if r['Benchmark'] == selected_benchmark and r['Planner'] == selected_planner), None)
     if not match or match['Path'] is None:
         print("❌ Kein Pfad gefunden für diese Auswahl.")
@@ -389,17 +390,15 @@ def animate_saved_result(results, selected_benchmark, selected_planner, steps_pe
     fig = plt.figure(figsize=(14, 7))
     ax1 = fig.add_subplot(1, 2, 1, projection='3d') if dof == 3 else fig.add_subplot(1, 2, 1)
     ax1.set_title(f'Konfigurationsraum ({selected_planner})')
-    if dof == 3:
-        coord1 = ax1.text2D(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12,
-                            verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
-    else:
-        coord1 = ax1.text(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12,
-                          verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
+    coord1 = (ax1.text2D(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12, verticalalignment='top',
+                        bbox=dict(facecolor='white', alpha=0.7)) if dof == 3
+            else ax1.text(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12, verticalalignment='top',
+                            bbox=dict(facecolor='white', alpha=0.7)))
 
     ax2 = fig.add_subplot(1, 2, 2)
     ax2.set_title(f'Arbeitsraum ({selected_planner})')
     coord2 = ax2.text(0.02, 0.95, '', transform=ax2.transAxes, fontsize=12,
-                      verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
+                    verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
 
     robot_dot = plot_configuration_space(ax1, graph, path, start, goal, dof, collision_checker)
     robot_patch = plot_work_space(ax2, scene, robot_shape, start, goal, collision_checker)
@@ -407,6 +406,17 @@ def animate_saved_result(results, selected_benchmark, selected_planner, steps_pe
     init = make_init_func(robot_patch, robot_dot, coord1, coord2, start, robot_shape, dof)
     animate = make_animate_func(robot_patch, robot_dot, coord1, coord2, interp, robot_shape, dof)
 
-    ani = make_animation(fig, init, animate, len(interp))
-    display(HTML(ani.to_jshtml()))
+    ani = make_animation(fig, init, animate, len(interp), interval=1000 // fps)
+
+    if save_path:
+        print(f"💾 Speichere Animation nach {save_path}...")
+        Writer = animation.writers['ffmpeg']
+        writer = Writer(fps=fps, metadata=dict(artist='PRM'), bitrate=1800)
+        ani.save(save_path, writer=writer)
+        print("✅ Video gespeichert.")
+
+    else:
+        display(HTML(ani.to_jshtml()))
+
     plt.close(fig)
+
