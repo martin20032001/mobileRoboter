@@ -210,10 +210,10 @@ from shapely.affinity import translate, rotate
 import matplotlib.pyplot as plt
 from matplotlib import animation
 
-def transform_robot(pos, robot_shape):
+def transform_robot(pos, robot_shape, use_radians=False):
     x, y = pos[0], pos[1]
     theta = pos[2] if len(pos) == 3 else 0
-    r = rotate(robot_shape, theta, origin='centroid', use_radians=False)
+    r = rotate(robot_shape, theta, origin='centroid', use_radians=use_radians)
     return translate(r, xoff=x, yoff=y)
 
 def interpolate_path(path, steps_per_segment=10):
@@ -287,7 +287,7 @@ def plot_work_space(ax, scene, robot_shape, start, goal, collision_checker):
 def make_animation(fig, init_func, animate_func, n_frames, interval=100):
     return animation.FuncAnimation(
         fig, animate_func, frames=n_frames,
-        init_func=init_func, blit=True, interval=interval, repeat=False
+        init_func=init_func, blit=False, interval=interval, repeat=False
     )
 
 
@@ -420,34 +420,3 @@ def animate_saved_result(results, selected_benchmark, selected_planner,
 
     plt.close(fig)
 
-def generate_valid_positions(collision_checker, num_positions, xlim, ylim):
-    
-    min_distance = 5
-    positions = []
-    obstacles = collision_checker.scene.values()
-    
-    while len(positions) < num_positions:
-        x = random.uniform(xlim[0], xlim[1])
-        y = random.uniform(ylim[0], ylim[1])
-        theta = random.uniform(0, 360)
-        
-        if not all(math.hypot(x - px, y - py) >= min_distance for px, py, _ in positions):
-            # check if new generated spot is away from already generated positions,
-            # TODO maybe implement a more complex approach (using real collision checks? prohibit overlapping of multiple starts and multiple goals, but start<->goal can be overlapping)
-            continue
-        
-        # Assure that every robot can be placed at x,y without collision
-        translated_shapes = [
-            translate(rotate(robot_shape, theta, origin='centroid', use_radians=False), xoff=x, yoff=y)
-            for robot_shape in collision_checker.robot_shapes
-        ]
-
-        is_valid = all(
-            not any(translated_shape.intersects(obstacle) for obstacle in obstacles)
-            for translated_shape in translated_shapes
-        )
-
-        if is_valid:
-            positions.append([x, y, theta])
-                
-    return positions
