@@ -420,3 +420,34 @@ def animate_saved_result(results, selected_benchmark, selected_planner,
 
     plt.close(fig)
 
+def generate_valid_positions(collision_checker, num_positions, xlim, ylim):
+    
+    min_distance = 5
+    positions = []
+    obstacles = collision_checker.scene.values()
+    
+    while len(positions) < num_positions:
+        x = random.uniform(xlim[0], xlim[1])
+        y = random.uniform(ylim[0], ylim[1])
+        theta = random.uniform(0, 360)
+        
+        if not all(math.hypot(x - px, y - py) >= min_distance for px, py, _ in positions):
+            # check if new generated spot is away from already generated positions,
+            # TODO maybe implement a more complex approach (using real collision checks? prohibit overlapping of multiple starts and multiple goals, but start<->goal can be overlapping)
+            continue
+        
+        # Assure that every robot can be placed at x,y without collision
+        translated_shapes = [
+            translate(rotate(robot_shape, theta, origin='centroid', use_radians=False), xoff=x, yoff=y)
+            for robot_shape in collision_checker.robot_shapes
+        ]
+
+        is_valid = all(
+            not any(translated_shape.intersects(obstacle) for obstacle in obstacles)
+            for translated_shape in translated_shapes
+        )
+
+        if is_valid:
+            positions.append([x, y, theta])
+                
+    return positions
