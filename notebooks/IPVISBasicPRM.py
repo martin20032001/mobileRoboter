@@ -59,45 +59,35 @@ def basicPRMVisualize(planner, solution, ax = None, nodeSize = 100):
                                    node_color='#DD0000',  ax = ax)
         nx.draw_networkx_labels(graph,pos,labels={"goal": "G"},  ax = ax)
 
-def basicPRMVisualize3D(planner, solution, ax = None, nodeSize = 100):
+def visualize_nodes(ax, node_positions, color):
+    for node_index, node_position in node_positions.items():
+        ax.plot(node_position[0], node_position[1], node_position[2], color)
+
+def visualize_edges(ax, node_positions, edges, color):
+    for edge in edges:
+        node_position_start = node_positions[edge[0]]
+        node_position_end = node_positions[edge[1]]
+
+        ax.plot([node_position_start[0], node_position_end[0]], [node_position_start[1], node_position_end[1]],[node_position_start[2], node_position_end[2]], color)
+
+
+
+def basicPRMVisualize3D(planner, solution, ax):
     """ Draw graph, obstacles and solution in a axis environment of matplotib.
     """
     # get a list of positions of all nodes by returning the content of the attribute 'pos'
     graph = planner.graph
-    collChecker = planner._collisionChecker
-
-    collChecker.drawObstacles(ax)
     
     graph_positions = nx.get_node_attributes(graph,'pos')
+    graph_edges = graph.edges()
 
-    for node_index, node_position in graph_positions.items():
-        ax.plot(node_position[0], node_position[1], node_position[2], 'bo')
-
-        edges = graph.edges(node_index)
-
-        for edge in edges:
-            if(hash(edge[1]) > hash(edge[0])):
-                continue
-
-            edge_start = graph_positions[edge[0]]
-            edge_end = graph_positions[edge[1]]
-
-            ax.plot([edge_start[0], edge_end[0]], [edge_start[1], edge_end[1]],[edge_start[2], edge_end[2]], ':b')
+    visualize_nodes(ax, graph_positions, 'bo')
+    visualize_edges(ax, graph_positions, graph_edges, 'b--')
 
     solution_graph = nx.subgraph(graph,solution)
 
-    solution_graph_positions = nx.get_node_attributes(solution_graph,'pos')
+    solution_positions = nx.get_node_attributes(solution_graph,'pos')
+    solution_edges = solution_graph.edges()
 
-    for node_index, node_position in solution_graph_positions.items():
-        ax.plot(node_position[0], node_position[1], node_position[2], 'ro')
-
-        edges = solution_graph.edges(node_index)
-
-        for edge in edges:
-            if(hash(edge[1]) > hash(edge[0])):
-                continue
-
-            edge_start = graph_positions[edge[0]]
-            edge_end = graph_positions[edge[1]]
-
-            ax.plot([edge_start[0], edge_end[0]], [edge_start[1], edge_end[1]],[edge_start[2], edge_end[2]], '-r')
+    visualize_nodes(ax, solution_positions, 'ro')
+    visualize_edges(ax, solution_positions, solution_edges, 'r-')
