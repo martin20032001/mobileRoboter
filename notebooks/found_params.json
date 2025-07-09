@@ -20,34 +20,6 @@
                 }
             },
             {
-                "Benchmark": 0,
-                "Parameters": {
-                    "radius": 5.0,
-                    "numNodes": 300
-                }
-            },
-            {
-                "Benchmark": 1,
-                "Parameters": {
-                    "radius": 5.0,
-                    "numNodes": 300
-                }
-            },
-            {
-                "Benchmark": 0,
-                "Parameters": {
-                    "radius": 5.0,
-                    "numNodes": 300
-                }
-            },
-            {
-                "Benchmark": 1,
-                "Parameters": {
-                    "radius": 5.0,
-                    "numNodes": 300
-                }
-            },
-            {
                 "Benchmark": 2,
                 "Parameters": {
                     "radius": 5.0,
@@ -58,21 +30,21 @@
                 "Benchmark": 3,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 4,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 5,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
@@ -100,21 +72,21 @@
                 "Benchmark": 9,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 10,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 11,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
@@ -142,21 +114,21 @@
                 "Benchmark": 15,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 16,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 17,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
@@ -184,21 +156,21 @@
                 "Benchmark": 21,
                 "Parameters": {
                     "radius": 16.875,
-                    "numNodes": 1012.5
+                    "numNodes": 1012
                 }
             },
             {
                 "Benchmark": 22,
                 "Parameters": {
                     "radius": 16.875,
-                    "numNodes": 1012.5
+                    "numNodes": 1012
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
                     "radius": 16.875,
-                    "numNodes": 1012.5
+                    "numNodes": 1012
                 }
             },
             {
@@ -226,21 +198,231 @@
                 "Benchmark": 27,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 28,
                 "Parameters": {
                     "radius": 11.25,
-                    "numNodes": 675.0
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 29,
                 "Parameters": {
                     "radius": 16.875,
-                    "numNodes": 1012.5
+                    "numNodes": 1012
+                }
+            },
+            {
+                "Benchmark": 0,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 1,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 2,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 3,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 4,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 5,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 6,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 7,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 8,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 9,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 10,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 11,
+                "Parameters": {
+                    "radius": 16.875,
+                    "numNodes": 1012
+                }
+            },
+            {
+                "Benchmark": 12,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 13,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 14,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 15,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 16,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 17,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 18,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 19,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 20,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 21,
+                "Parameters": {
+                    "radius": 16.875,
+                    "numNodes": 1012
+                }
+            },
+            {
+                "Benchmark": 22,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 23,
+                "Parameters": {
+                    "radius": 25.3125,
+                    "numNodes": 1518
+                }
+            },
+            {
+                "Benchmark": 24,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 25,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 26,
+                "Parameters": {
+                    "radius": 5.0,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 27,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 28,
+                "Parameters": {
+                    "radius": 11.25,
+                    "numNodes": 675
+                }
+            },
+            {
+                "Benchmark": 29,
+                "Parameters": {
+                    "radius": 16.875,
+                    "numNodes": 1012
                 }
             }
         ]
@@ -249,7 +431,7 @@
         "initialConfig": {
             "initialRoadmapSize": 300,
             "updateRoadmapSize": 50,
-            "kNearest": 10,
+            "kNearest": 8,
             "maxIterations": 50
         },
         "runs": [
@@ -258,7 +440,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -267,25 +449,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
-                    "maxIterations": 50
-                }
-            },
-            {
-                "Benchmark": 0,
-                "Parameters": {
-                    "initialRoadmapSize": 300,
-                    "updateRoadmapSize": 50,
-                    "kNearest": 10,
-                    "maxIterations": 50
-                }
-            },
-            {
-                "Benchmark": 1,
-                "Parameters": {
-                    "initialRoadmapSize": 300,
-                    "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -294,7 +458,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -303,7 +467,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -312,7 +476,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -321,7 +485,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -330,7 +494,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -339,7 +503,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -348,7 +512,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -357,7 +521,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -366,7 +530,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -375,7 +539,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -384,7 +548,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -393,7 +557,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -402,7 +566,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -411,7 +575,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -420,7 +584,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -429,7 +593,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -438,7 +602,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -447,7 +611,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -456,7 +620,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -465,7 +629,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -474,17 +638,17 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "initialRoadmapSize": 300,
-                    "updateRoadmapSize": 50,
-                    "kNearest": 10,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 450,
+                    "updateRoadmapSize": 75,
+                    "kNearest": 12,
+                    "maxIterations": 75
                 }
             },
             {
@@ -492,7 +656,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -501,7 +665,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -510,7 +674,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -519,7 +683,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -528,7 +692,7 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
                     "maxIterations": 50
                 }
             },
@@ -537,7 +701,277 @@
                 "Parameters": {
                     "initialRoadmapSize": 300,
                     "updateRoadmapSize": 50,
-                    "kNearest": 10,
+                    "kNearest": 8,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 0,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 1,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 2,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 3,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 4,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 5,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 6,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 7,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 8,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 9,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 10,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 11,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 12,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 13,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 14,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 15,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 16,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 17,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 18,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 19,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 20,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 21,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 22,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 23,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 24,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 25,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 26,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 27,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 28,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
+                    "maxIterations": 50
+                }
+            },
+            {
+                "Benchmark": 29,
+                "Parameters": {
+                    "initialRoadmapSize": 200,
+                    "updateRoadmapSize": 100,
+                    "kNearest": 15,
                     "maxIterations": 50
                 }
             }
@@ -564,6 +998,202 @@
                 }
             },
             {
+                "Benchmark": 2,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 3,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 4,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 5,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 6,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 7,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 8,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 9,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 10,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 11,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 12,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 13,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 14,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 15,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 16,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 17,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 18,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 19,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 20,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 21,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 1012,
+                    "testGoalAfterNumberOfNodes": 33
+                }
+            },
+            {
+                "Benchmark": 22,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 1012,
+                    "testGoalAfterNumberOfNodes": 33
+                }
+            },
+            {
+                "Benchmark": 23,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 675,
+                    "testGoalAfterNumberOfNodes": 22
+                }
+            },
+            {
+                "Benchmark": 24,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 25,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 26,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 27,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 28,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 29,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 300,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
                 "Benchmark": 0,
                 "Parameters": {
                     "numberOfGeneratedNodes": 300,
@@ -713,22 +1343,22 @@
             {
                 "Benchmark": 21,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 1012.5,
-                    "testGoalAfterNumberOfNodes": 33.75
+                    "numberOfGeneratedNodes": 675,
+                    "testGoalAfterNumberOfNodes": 22
                 }
             },
             {
                 "Benchmark": 22,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 1012.5,
-                    "testGoalAfterNumberOfNodes": 33.75
+                    "numberOfGeneratedNodes": 675,
+                    "testGoalAfterNumberOfNodes": 22
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 1518.75,
-                    "testGoalAfterNumberOfNodes": 50.625
+                    "numberOfGeneratedNodes": 1518,
+                    "testGoalAfterNumberOfNodes": 50
                 }
             },
             {

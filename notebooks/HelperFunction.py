@@ -401,18 +401,27 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
     """
 
     def _scale_config(cfg, factor):
+        """
+        Tiefe Kopie von cfg, bei der:
+        - aus int-Vorlagen nach Skalierung wieder int wird
+        - float-Vorlagen float bleiben
+        """
         new_cfg = copy.deepcopy(cfg)
         if isinstance(cfg, dict):
             for k, v in cfg.items():
-                if isinstance(v, Number):
-                    new_cfg[k] = v * factor
+                if isinstance(v, Number) and not isinstance(v, bool):
+                    scaled = v * factor
+                    # wenn original ein int war, zurück zu int casten
+                    new_cfg[k] = int(scaled) if type(v) is int else scaled
         elif hasattr(new_cfg, '__dict__'):
             for attr, val in vars(new_cfg).items():
-                if isinstance(val, Number):
-                    setattr(new_cfg, attr, val * factor)
+                if isinstance(val, Number) and not isinstance(val, bool):
+                    scaled = val * factor
+                    setattr(new_cfg, attr, int(scaled) if type(val) is int else scaled)
         else:
             raise TypeError(f"Cannot scale config of type {type(cfg)}")
         return new_cfg
+
 
     def _cfg_to_dict(cfg):
         if isinstance(cfg, dict):
@@ -824,15 +833,15 @@ def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
     - Dritte Zeile: 2 Plots
 
     Grid-Linien werden entfernt und die X-Achse zeigt Beschriftungen in 5er-Schritten.
+    Es werden nur Marker ohne Verbindungs-Linien gezeichnet.
     """
-    # JSON laden und in flache Liste umwandeln
     with open(json_file, 'r') as f:
         data = json.load(f)
 
     records = []
     for planner, info in data.items():
         for run in info.get('runs', []):
-            b = run['Benchmark'] + 1  # eins-basiert
+            b = run['Benchmark'] + 1
             rec = {'Planner': planner, 'Benchmark': b}
             rec.update(run['Parameters'])
             records.append(rec)
@@ -840,7 +849,6 @@ def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
     df = pd.DataFrame(records)
     params = [c for c in df.columns if c not in ('Planner', 'Benchmark')]
 
-    # Layout definieren
     row_layout = [2, 4, 2]
     max_cols = max(row_layout)
     fig = plt.figure(figsize=(4 * max_cols, 3 * len(row_layout)))
@@ -860,16 +868,14 @@ def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
                     sub['Benchmark'],
                     sub[param],
                     marker='o',
-                    linestyle='-',
+                    linestyle='None',  
                     label=planner
                 )
             ax.set_title(param)
             ax.set_xlabel('Benchmark')
             ax.set_ylabel('Wert')
-            # X-Achse in 5er-Schritten
             ax.set_xticks(range(1, total_benchmarks + 1, 5))
             ax.set_xlim(1, total_benchmarks)
-            # Grid aus:
             ax.grid(False)
             ax.legend(fontsize='small')
             plot_i += 1
