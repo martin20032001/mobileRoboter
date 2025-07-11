@@ -819,22 +819,25 @@ def animate_robot_scene(
     return HTML(anim.to_jshtml())
 
 
-import json
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
-
 def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
     """
-    Lädt die JSON-Datei und erstellt für jeden Parameter eine Grafik in einer
-    benutzerdefinierten Layout-Anordnung:
+    Lädt die JSON-Datei und erstellt für jeden Parameter eine Grafik in einem
+    benutzerdefinierten Layout:
     - Erste Zeile: 2 Plots
     - Zweite Zeile: 4 Plots
     - Dritte Zeile: 2 Plots
+    - Vierte Zeile: 1 Plot (zentriert)
 
-    Grid-Linien werden entfernt und die X-Achse zeigt Beschriftungen in 5er-Schritten.
-    Es werden nur Marker ohne Verbindungs-Linien gezeichnet.
+    Grid-Linien werden entfernt, die X-Achse zeigt Beschriftungen in 5er-Schritten,
+    und es werden nur Marker ohne Verbindungs-Linien gezeichnet.
+    Eine gemeinsame Legende wird einmal unterhalb des gesamten Plots angezeigt.
     """
+    import json
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    from matplotlib.gridspec import GridSpec
+
+    # --- JSON laden ---
     with open(json_file, 'r') as f:
         data = json.load(f)
 
@@ -849,36 +852,58 @@ def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
     df = pd.DataFrame(records)
     params = [c for c in df.columns if c not in ('Planner', 'Benchmark')]
 
-    row_layout = [2, 4, 2]
+    # --- Layout: feste Struktur ---
+    row_layout = [2, 4, 1, 2]
+    total_plots = len(params)
+
+    # Wenn mehr Plots als im festen Layout vorhanden sind
+    while total_plots > sum(row_layout):
+        row_layout.insert(-1, 4)  # Füge weitere Zeilen mit 4 Plots vor der letzten Zeile ein
+
     max_cols = max(row_layout)
     fig = plt.figure(figsize=(4 * max_cols, 3 * len(row_layout)))
     gs = GridSpec(len(row_layout), max_cols, figure=fig)
 
+    # --- Plots zeichnen ---
     plot_i = 0
+    handles_labels = {}  # für die globale Legende
     for row_i, cols_in_row in enumerate(row_layout):
-        start_col = (max_cols - cols_in_row) // 2
+        start_col = (max_cols - cols_in_row) // 2  # Zentrierung
         for col_i in range(cols_in_row):
-            if plot_i >= len(params):
+            if plot_i >= total_plots:
                 break
             ax = fig.add_subplot(gs[row_i, start_col + col_i])
             param = params[plot_i]
             for planner in df['Planner'].unique():
                 sub = df[df['Planner'] == planner]
-                ax.plot(
+                line, = ax.plot(
                     sub['Benchmark'],
                     sub[param],
                     marker='o',
-                    linestyle='None',  
+                    linestyle='None',
                     label=planner
                 )
+                # Handles und Labels für die globale Legende sammeln
+                if planner not in handles_labels:
+                    handles_labels[planner] = line
             ax.set_title(param)
             ax.set_xlabel('Benchmark')
             ax.set_ylabel('Wert')
             ax.set_xticks(range(1, total_benchmarks + 1, 5))
             ax.set_xlim(1, total_benchmarks)
             ax.grid(False)
-            ax.legend(fontsize='small')
             plot_i += 1
 
+    # --- Globale Legende ---
+    fig.legend(
+        handles_labels.values(),
+        handles_labels.keys(),
+        loc='lower center',
+        ncol=len(handles_labels),
+        fontsize='small',
+        bbox_to_anchor=(0.5, -0.02)
+    )
+
     plt.tight_layout()
+    plt.subplots_adjust(bottom=0.1)  # Platz für die Legende schaffen
     plt.show()
