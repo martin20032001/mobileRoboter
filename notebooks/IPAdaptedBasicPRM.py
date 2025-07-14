@@ -51,7 +51,8 @@ class AdaptedBasicPRM(IPPRMBase.PRMBase):
             pos_filtered = []
 
             if len(self.dofs) == 0:
-                graph_pos_filtered, pos_filtered = graph_pos, pos
+                # for one mobile robot (which has no dofs attribute in collisionChecker) keep also only the first two dimensions
+                graph_pos_filtered, pos_filtered = graph_pos[:2], pos[:2]
             else:
                 curr = 0
                 for dof in self.dofs:
@@ -114,9 +115,7 @@ class AdaptedBasicPRM(IPPRMBase.PRMBase):
         """
         # 0. reset
         self.graph.clear()
-        
-        print("Building collision-free Roadmap in", len(startList[0]), "dimensional configuration space")
-        
+                
         # 1. check start and goal whether collision free (s. BaseClass)
         checkedStartList, checkedGoalList = self._checkStartGoal(startList,goalList)
         
@@ -138,9 +137,7 @@ class AdaptedBasicPRM(IPPRMBase.PRMBase):
                  self.graph.add_node("goal", pos=checkedGoalList[0], color='lightgreen')
                  self.graph.add_edge("goal", node[0])
                  break
-
-        print("Complete, now trying to find shortest path")
-
+             
         try:
             path = nx.shortest_path(self.graph,"start","goal")
         except:
