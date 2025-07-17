@@ -71,8 +71,8 @@
             {
                 "Benchmark": 9,
                 "Parameters": {
-                    "radius": 16.875,
-                    "numNodes": 1012
+                    "radius": 11.25,
+                    "numNodes": 675
                 }
             },
             {
@@ -148,29 +148,29 @@
             {
                 "Benchmark": 20,
                 "Parameters": {
-                    "radius": 7.5,
-                    "numNodes": 450
+                    "radius": 11.25,
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 21,
                 "Parameters": {
-                    "radius": 11.25,
-                    "numNodes": 675
+                    "radius": 16.875,
+                    "numNodes": 1012
                 }
             },
             {
                 "Benchmark": 22,
                 "Parameters": {
-                    "radius": 11.25,
-                    "numNodes": 675
+                    "radius": 16.875,
+                    "numNodes": 1012
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "radius": 16.875,
-                    "numNodes": 1012
+                    "radius": 25.3125,
+                    "numNodes": 1518
                 }
             },
             {
@@ -197,8 +197,8 @@
             {
                 "Benchmark": 27,
                 "Parameters": {
-                    "radius": 11.25,
-                    "numNodes": 675
+                    "radius": 16.875,
+                    "numNodes": 1012
                 }
             },
             {
@@ -219,280 +219,280 @@
     },
     "LazyPRM": {
         "initialConfig": {
-            "initialRoadmapSize": 200,
-            "updateRoadmapSize": 100,
-            "kNearest": 15,
-            "maxIterations": 50
+            "initialRoadmapSize": 100,
+            "updateRoadmapSize": 50,
+            "kNearest": 10,
+            "maxIterations": 40
         },
         "runs": [
             {
                 "Benchmark": 0,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 1,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 2,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 3,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 4,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 5,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 6,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 7,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 8,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 9,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 10,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 11,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 12,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 13,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 14,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 15,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 16,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 17,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 18,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 19,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 20,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 21,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
+                    "initialRoadmapSize": 150,
+                    "updateRoadmapSize": 75,
                     "kNearest": 15,
-                    "maxIterations": 50
+                    "maxIterations": 60
                 }
             },
             {
                 "Benchmark": 22,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 24,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 25,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 26,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 27,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 28,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             },
             {
                 "Benchmark": 29,
                 "Parameters": {
-                    "initialRoadmapSize": 200,
-                    "updateRoadmapSize": 100,
-                    "kNearest": 15,
-                    "maxIterations": 50
+                    "initialRoadmapSize": 100,
+                    "updateRoadmapSize": 50,
+                    "kNearest": 10,
+                    "maxIterations": 40
                 }
             }
         ]
@@ -535,7 +535,7 @@
             {
                 "Benchmark": 5,
                 "Parameters": {
-                    "ntry": 60
+                    "ntry": 40
                 }
             },
             {
@@ -565,13 +565,13 @@
             {
                 "Benchmark": 10,
                 "Parameters": {
-                    "ntry": 40
+                    "ntry": 60
                 }
             },
             {
                 "Benchmark": 11,
                 "Parameters": {
-                    "ntry": 60
+                    "ntry": 40
                 }
             },
             {
@@ -643,7 +643,7 @@
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "ntry": 135
+                    "ntry": 90
                 }
             },
             {
@@ -840,22 +840,22 @@
             {
                 "Benchmark": 21,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 675,
-                    "testGoalAfterNumberOfNodes": 22
+                    "numberOfGeneratedNodes": 1518,
+                    "testGoalAfterNumberOfNodes": 50
                 }
             },
             {
                 "Benchmark": 22,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 1012,
-                    "testGoalAfterNumberOfNodes": 33
+                    "numberOfGeneratedNodes": 675,
+                    "testGoalAfterNumberOfNodes": 22
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 675,
-                    "testGoalAfterNumberOfNodes": 22
+                    "numberOfGeneratedNodes": 1518,
+                    "testGoalAfterNumberOfNodes": 50
                 }
             },
             {

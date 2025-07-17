@@ -231,6 +231,52 @@ def interpolate_path(path, steps_per_segment=10):
                 interp_path.append(interp)
     interp_path.append(np.array(path[-1]))
     return interp_path
+def interpolate_path_equal_speed(path, total_steps=100):
+    """
+    Interpoliert den Pfad mit gleichmäßiger Geschwindigkeit.
+
+    Args:
+        path: Liste von Konfigurationen [(x, y, theta)], [(x, y)], etc.
+        total_steps: Anzahl der Gesamt-Interpolationspunkte.
+    """
+    path = np.array(path)
+    interp_path = []
+
+    # Berechne die Abstände zwischen den Punkten
+    distances = np.linalg.norm(np.diff(path[:, :2], axis=0), axis=1)
+    cumulative_distances = np.insert(np.cumsum(distances), 0, 0)
+    total_distance = cumulative_distances[-1]
+
+    # Gleichmäßig verteilte Ziellängen
+    target_distances = np.linspace(0, total_distance, total_steps)
+
+    # Interpolieren
+    for d in target_distances:
+        # Finde das Segment
+        idx = np.searchsorted(cumulative_distances, d, side='right') - 1
+        idx = min(idx, len(path) - 2)  # Grenze absichern
+
+        # Lokale Interpolation innerhalb des Segments
+        segment_start = path[idx]
+        segment_end = path[idx + 1]
+        segment_length = cumulative_distances[idx + 1] - cumulative_distances[idx]
+        if segment_length == 0:
+            alpha = 0
+        else:
+            alpha = (d - cumulative_distances[idx]) / segment_length
+
+        # Interpolation für Position
+        interp_pos = (1 - alpha) * segment_start[:2] + alpha * segment_end[:2]
+
+        if len(segment_start) == 3:
+            # Interpolation für Winkel (korrekte Behandlung von Sprüngen über 360°)
+            dtheta = (segment_end[2] - segment_start[2] + 180) % 360 - 180
+            theta = (segment_start[2] + alpha * dtheta) % 360
+            interp_path.append(np.array([interp_pos[0], interp_pos[1], theta]))
+        else:
+            interp_path.append(interp_pos)
+
+    return interp_path
 
 def compute_prm_path(planner_cls, collision_checker, start, goal, config):
     planner = planner_cls(collision_checker)
@@ -564,10 +610,31 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
 
     return results
 
+from IPython import get_ipython
+get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
 
+from tqdm import tqdm
+from matplotlib import animation, pyplot as plt
+from IPython import get_ipython
 
 def animate_saved_result(results, selected_benchmark, selected_planner,
-                        steps_per_segment=3, save_path: str = None, fps: int = 10):
+                         steps_per_segment=3, save_path: str = None, fps: int = 30):
+    """
+    Animiert den gespeicherten Pfad mit Fortschrittsanzeige und hoher Auflösung.
+    """
+    # Retina-Optimierung (falls im Notebook)
+    ipython = get_ipython()
+    if ipython is not None:
+        ipython.run_line_magic('matplotlib', 'inline')
+        ipython.run_line_magic('config', "InlineBackend.figure_format = 'retina'")
+
+    plt.rcParams.update({
+        'figure.dpi': 300,
+        'savefig.dpi': 300,
+        'font.size': 14,
+        'lines.antialiased': True,
+        'patch.antialiased': True
+    })
 
     match = next((r for r in results if r['Benchmark'] == selected_benchmark and r['Planner'] == selected_planner), None)
     if not match or match['Path'] is None:
@@ -582,41 +649,51 @@ def animate_saved_result(results, selected_benchmark, selected_planner,
     robot_shape = collision_checker.robot_shape
     scene = collision_checker.scene
     dof = len(start)
-    interp = interpolate_path(path, steps_per_segment=steps_per_segment)
+    total_steps = steps_per_segment * len(path) * 10
+    interp = interpolate_path_equal_speed(path, total_steps=total_steps)
 
-    fig = plt.figure(figsize=(14, 7))
+    fig = plt.figure(figsize=(14, 7), dpi=300)
+
     ax1 = fig.add_subplot(1, 2, 1, projection='3d') if dof == 3 else fig.add_subplot(1, 2, 1)
     ax1.set_title(f'Konfigurationsraum ({selected_planner})')
     coord1 = (ax1.text2D(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12, verticalalignment='top',
-                        bbox=dict(facecolor='white', alpha=0.7)) if dof == 3
-            else ax1.text(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12, verticalalignment='top',
+                         bbox=dict(facecolor='white', alpha=0.7))
+              if dof == 3
+              else ax1.text(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12, verticalalignment='top',
                             bbox=dict(facecolor='white', alpha=0.7)))
 
     ax2 = fig.add_subplot(1, 2, 2)
     ax2.set_title(f'Arbeitsraum ({selected_planner})')
     coord2 = ax2.text(0.02, 0.95, '', transform=ax2.transAxes, fontsize=12,
-                    verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
+                      verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
 
     robot_dot = plot_configuration_space(ax1, graph, path, start, goal, dof, collision_checker)
     robot_patch = plot_work_space(ax2, scene, robot_shape, start, goal, collision_checker)
 
     init = make_init_func(robot_patch, robot_dot, coord1, coord2, start, robot_shape, dof)
-    animate = make_animate_func(robot_patch, robot_dot, coord1, coord2, interp, robot_shape, dof)
+    animate_func = make_animate_func(robot_patch, robot_dot, coord1, coord2, interp, robot_shape, dof)
 
-    ani = make_animation(fig, init, animate, len(interp), interval=1000 // fps)
+    ani = animation.FuncAnimation(fig, animate_func, init_func=init,
+                                  frames=len(interp), interval=1000 // fps)
 
     if save_path:
         print(f"💾 Speichere Animation nach {save_path}...")
         Writer = animation.writers['ffmpeg']
-        writer = Writer(fps=fps, metadata=dict(artist='PRM'), bitrate=1800)
-        ani.save(save_path, writer=writer)
-        print("✅ Video gespeichert.")
+        writer = Writer(fps=fps, metadata=dict(artist='PRM'), bitrate=12000)
+
+        # Fortschrittsanzeige beim Rendern
+        with tqdm(total=len(interp), desc="🎞 Rendering Frames") as pbar:
+            def progress_callback(current_frame, total_frames):
+                pbar.update(1)
+            ani.save(save_path, writer=writer, dpi=300,
+                     progress_callback=progress_callback)
+        print("✅ Video gespeichert unter:", save_path)
 
     else:
+        from IPython.display import HTML
         display(HTML(ani.to_jshtml()))
 
     plt.close(fig)
-
 
 
 
@@ -631,7 +708,7 @@ import matplotlib as mpl
 from IPython.display import HTML
 from IPMobileRobotCollisionChecker import MobileRobotCollisionChecker
 from HelperFunction import transform_robot
-
+from matplotlib.animation import FFMpegWriter
 def animate_robot_scene(
     num_obstacles=20,
     num_waypoints=15,
@@ -795,10 +872,13 @@ def animate_robot_scene(
         robot_patch = patches
         ax.set_title("Kollision" if collision else "Frei")
 
-    # Animation
-    # Animation
+    writer = FFMpegWriter(fps=30)  # 30 Bilder pro Sekunde
+
+    # Animation erstellen und speichern
     anim = FuncAnimation(fig, update, frames=len(trajectory), interval=animation_speed, repeat=False)
 
+    # Speichern als MP4
+    anim.save('robot_animation.mp4', writer=writer)
     plt.close(fig)  # ❌ Figure-Handle schließen, damit kein zusätzliches Standbild angezeigt wird
     return HTML(anim.to_jshtml())
 

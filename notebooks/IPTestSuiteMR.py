@@ -5,7 +5,7 @@ from IPMobileRobotCollisionChecker import MobileRobotCollisionChecker
 from HelperFunction import generate_random_polygon_shape
 import random
 
-# --- Roboterdefinitionen ---
+# Roboterdefinitionen
 robots = {
     "L_Robot": Polygon([(0, 0), (0, 1), (1, 1.5), (1, 1), (1.5, 1), (0, 0)]),
     "H_Robot": Polygon([
@@ -20,19 +20,19 @@ robots = {
         (1.6, 0), (1.6, 0.6), (0.4, 0.6), (0.4, 0)
     ]),
     "C_Robot": Polygon([
-    (0.0, 0.0), (0.0, 1.2), (0.5, 1.2), (0.5, 1.8), (0.8, 1.8),
-    (0.8, 1.2), (1.5, 1.2), (1.5, 2.0), (1.8, 2.0), (1.8, 1.2),  
-    (2.4, 1.2), (2.4, 0.8), (1.8, 0.8), (1.8, 0.4), (1.5, 0.4), 
-    (1.5, 0.8), (1.0, 0.8), (1.0, 0.4), (0.7, 0.4), (0.7, 0.8),  
-    (0.0, 0.8), (0.0, 0.0)
-]),
+        (0.0, 0.0), (0.0, 1.2), (0.5, 1.2), (0.5, 1.8), (0.8, 1.8),
+        (0.8, 1.2), (1.5, 1.2), (1.5, 2.0), (1.8, 2.0), (1.8, 1.2),
+        (2.4, 1.2), (2.4, 0.8), (1.8, 0.8), (1.8, 0.4), (1.5, 0.4),
+        (1.5, 0.8), (1.0, 0.8), (1.0, 0.4), (0.7, 0.4), (0.7, 0.8),
+        (0.0, 0.8), (0.0, 0.0)
+    ]),
     "R_Robot": Polygon([
-    (0.0, 0.0), (0.3, 0.0), (0.2, 0.4), (0.5, 0.6), (0.7, 1.8), (1.0, 2.3), (1.3, 1.8), (1.5, 0.6), (1.8, 0.4), (1.7, 0.0), (2.0, 0.0), (1.2, -0.4), (0.8, 0.0), (0.0, 0.0)
-])
-
+        (0.0, 0.0), (0.3, 0.0), (0.2, 0.4), (0.5, 0.6), (0.7, 1.8), (1.0, 2.3),
+        (1.3, 1.8), (1.5, 0.6), (1.8, 0.4), (1.7, 0.0), (2.0, 0.0), (1.2, -0.4), (0.8, 0.0), (0.0, 0.0)
+    ])
 }
 
-# --- Umgebungsdefinitionen ---
+# Umgebungsdefinitionen
 scenes = {
     "scene1": {
         "wall1": box(6, 0, 8, 16),
@@ -64,7 +64,7 @@ scenes = {
     }
 }
 
-# --- Start- und Zielpositionen ---
+# Start- und Zielpositionen
 positions = {
     "scene1": ([[1, 1]], [[16, 1]], [[1, 1, 0]], [[16, 1, 180]]),
     "scene2": ([[1, 1]], [[18, 4]], [[1, 1, 0]], [[18, 4, 300]]),
@@ -73,49 +73,53 @@ positions = {
     "scene5": ([[3, 3]], [[23, 23]], [[3, 3, 0]], [[23, 23, 245]])
 }
 
-# --- Benchmarks erzeugen ---
+limits = {
+    "scene1": [[0, 22], [0, 20]],
+    "scene2": [[0, 22], [0, 20]],
+    "scene3": [[0, 24], [0, 24]],
+    "scene4": [[0, 22], [0, 20]],
+    "scene5": [[0, 27], [0, 27]]
+}
+
 benchList = []
 for i, scene_name in enumerate(scenes):
     scene = scenes[scene_name]
     start2d, goal2d, start3d, goal3d = positions[scene_name]
-    limits2d = [[0, 27], [0, 27]] if scene_name == "scene5" else [[0, 24], [0, 24]] if scene_name == "scene3" else [[0, 22], [0, 20]]
+    limits2d = limits[scene_name]
     limits3d = limits2d + [[0, 360]]
 
     for j, (name, robot) in enumerate(robots.items()):
         is3d = name.startswith(("T_", "C_", "R_"))
         dof = 3 if is3d else 2
-        limits = limits3d if dof == 3 else limits2d
+        lim = limits3d if dof == 3 else limits2d
         start = start3d if dof == 3 else start2d
         goal = goal3d if dof == 3 else goal2d
 
-        # --- MANUELLE START/ZIEL ANPASSUNG FÜR BENCHMARK 3 UND ROBOTER 2+3 ---
-        if i == 2:  # i=2 -> Benchmark 3
-            if j == 2:  
-                start = [[3.2, 3.3]]
-                goal = [[15.2, 15.0]]
-            elif j == 3:  
-                start = [[2.4, 4, 45.0]]
-                goal = [[16.6, 13.2, 200.0]]
+        # 🟦 Sonderbehandlung für Szene 3, Roboter 2 & 3
+        if i == 2 and j in {2, 3}:
+            if j == 2:
+                start, goal = [[3.2, 3.3]], [[15.2, 15.0]]
+            else:
+                start, goal = [[2.4, 4, 45.0]], [[16.6, 13.2, 200.0]]
+        if i == 3 and j == 5:  
+            start = [[1, 1, 270]]
 
         label = f"{name.replace('_', '-')}-Roboter ({dof}DOF) in {scene_name}"
         bench_name = f"{dof}DOF_{name}_{scene_name}"
-        checker = MobileRobotCollisionChecker(robot, scene, limits)
+        checker = MobileRobotCollisionChecker(robot, scene, lim)
         benchList.append(Benchmark(bench_name, checker, start, goal, label, dof))
 
-
-# --- Funktion zum Erzeugen zufälliger Benchmarks ---
+# Funktion zum Erzeugen zufälliger Benchmarks
 def create_random_benchmark(name_prefix="random", dof=2, seed=None):
     if seed is not None:
         random.seed(seed)
 
-    # Roboterform
     robot_shape = generate_random_polygon_shape(
         num_vertices=random.randint(5, 12),
         concavity=random.uniform(0.3, 0.6)
     )
     robot_name = f"AsymRobot_{random.randint(1000, 9999)}"
 
-    # Hindernisse
     scene = {}
     for i in range(random.randint(6, 12)):
         choice = random.random()
@@ -139,11 +143,9 @@ def create_random_benchmark(name_prefix="random", dof=2, seed=None):
             )
             scene[f"poly_{i}"] = translate(shape.buffer(0), xoff=x_off, yoff=y_off)
 
-    # Kollisionschecker
     limits = [[0, 22], [0, 22]] + ([[0, 360]] if dof == 3 else [])
     checker = MobileRobotCollisionChecker(robot_shape, scene, limits)
 
-    # Start- und Zielkonfigurationen
     def sample_free_position():
         for _ in range(1000):
             x = random.uniform(limits[0][0], limits[0][1])
@@ -151,7 +153,7 @@ def create_random_benchmark(name_prefix="random", dof=2, seed=None):
             pos = [x, y] if dof == 2 else [x, y, random.uniform(0, 360)]
             if not checker.pointInCollision(pos):
                 return pos
-        raise RuntimeError("⚠️ Keine gültige Start-/Zielposition gefunden.")
+        raise RuntimeError("Keine gültige Start-/Zielposition gefunden.")
 
     start = [sample_free_position()]
     goal = [sample_free_position()]

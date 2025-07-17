@@ -108,8 +108,13 @@ class VisPRM(PRMBase):
 
         # 3. find connection of start and goal to roadmap
         # find nearest, collision-free connection between node on graph and start
-        posList = nx.get_node_attributes(self.graph,'pos')
+        posList = nx.get_node_attributes(self.graph, 'pos')
+        if not posList:
+            print("Keine Knoten in der Roadmap vorhanden – Abbruch der Pfadplanung.")
+            return []
+
         kdTree = cKDTree(list(posList.values()))
+
         
         result = kdTree.query(checkedStartList[0],k=5)
         for node in result[1]:
