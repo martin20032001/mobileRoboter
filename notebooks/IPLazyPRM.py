@@ -44,7 +44,8 @@ class LazyPRM(PRMBase):
         for node in addedNodes:
         #for node in self.graph.nodes():
         # Find set of candidates to connect to sorted by distance
-            result = kdTree.query(self.graph.nodes[node]['pos'],k=kNearest)
+            capped_k_nearest = min (kNearest, len(self.graph.nodes()))
+            result = kdTree.query(self.graph.nodes[node]['pos'],k=capped_k_nearest)
             for data in result[1]:
                 c_node = [x for x, y in self.graph.nodes(data=True) if (y['pos']==posList[data])][0]
                 if node!=c_node:

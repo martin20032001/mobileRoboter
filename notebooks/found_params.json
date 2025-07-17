@@ -71,8 +71,8 @@
             {
                 "Benchmark": 9,
                 "Parameters": {
-                    "radius": 11.25,
-                    "numNodes": 675
+                    "radius": 16.875,
+                    "numNodes": 1012
                 }
             },
             {
@@ -85,8 +85,8 @@
             {
                 "Benchmark": 11,
                 "Parameters": {
-                    "radius": 16.875,
-                    "numNodes": 1012
+                    "radius": 11.25,
+                    "numNodes": 675
                 }
             },
             {
@@ -148,22 +148,22 @@
             {
                 "Benchmark": 20,
                 "Parameters": {
-                    "radius": 5.0,
-                    "numNodes": 300
+                    "radius": 7.5,
+                    "numNodes": 450
                 }
             },
             {
                 "Benchmark": 21,
                 "Parameters": {
-                    "radius": 16.875,
-                    "numNodes": 1012
+                    "radius": 11.25,
+                    "numNodes": 675
                 }
             },
             {
                 "Benchmark": 22,
                 "Parameters": {
-                    "radius": 16.875,
-                    "numNodes": 1012
+                    "radius": 11.25,
+                    "numNodes": 675
                 }
             },
             {
@@ -211,8 +211,8 @@
             {
                 "Benchmark": 29,
                 "Parameters": {
-                    "radius": 16.875,
-                    "numNodes": 1012
+                    "radius": 11.25,
+                    "numNodes": 675
                 }
             }
         ]
@@ -535,7 +535,7 @@
             {
                 "Benchmark": 5,
                 "Parameters": {
-                    "ntry": 40
+                    "ntry": 60
                 }
             },
             {
@@ -631,19 +631,19 @@
             {
                 "Benchmark": 21,
                 "Parameters": {
-                    "ntry": 60
+                    "ntry": 40
                 }
             },
             {
                 "Benchmark": 22,
                 "Parameters": {
-                    "ntry": 40
+                    "ntry": 60
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "ntry": 40
+                    "ntry": 135
                 }
             },
             {
@@ -847,15 +847,15 @@
             {
                 "Benchmark": 22,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 450,
-                    "testGoalAfterNumberOfNodes": 15
+                    "numberOfGeneratedNodes": 1012,
+                    "testGoalAfterNumberOfNodes": 33
                 }
             },
             {
                 "Benchmark": 23,
                 "Parameters": {
-                    "numberOfGeneratedNodes": 1012,
-                    "testGoalAfterNumberOfNodes": 33
+                    "numberOfGeneratedNodes": 675,
+                    "testGoalAfterNumberOfNodes": 22
                 }
             },
             {

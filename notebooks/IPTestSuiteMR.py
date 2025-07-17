@@ -13,21 +13,23 @@ robots = {
         (1.2, 2.0), (1.2, 1.5), (0.6, 1.5), (0.6, 1.3), (1.2, 1.3), (1.3, 0.0), (1.6, 0.0)
     ]),
     "U_Robot": Polygon([
-        (0, 0), (0, 2), (0.5, 2), (0.5, 0.5), (1.5, 0.5), (1.5, 3), (2, 3), (2, 0)
+        (0, 0), (0, 2), (0.5, 2), (0.5, 0.5), (2, 0.5), (2, 3), (2.5, 3), (2.5, 0)
     ]),
     "T_Robot": Polygon([
-        (0, 0), (0, 1), (0.4, 1), (0.4, 1.6), (1.6, 1.6), (1.6, 1), (2, 1), (2, 0),
+        (0, 0), (0, 3), (0.4, 3), (0.4, 1.6), (1.6, 1.6), (1.6, 1), (2, 1), (2, 0),
         (1.6, 0), (1.6, 0.6), (0.4, 0.6), (0.4, 0)
     ]),
     "C_Robot": Polygon([
-        (0.5, 0), (0.5, 0.6), (0.1, 0.6), (0.1, 1.4), (0.6, 1.4), (0.6, 2), (1.8, 2),
-        (1.8, 1.6), (1.2, 1.6), (1.2, 1.2), (2, 1.2), (2, 0.8), (1.2, 0.8),
-        (1.2, 0.4), (1.8, 0.4), (1.8, 0), (0.5, 0)
-    ]),
+    (0.0, 0.0), (0.0, 1.2), (0.5, 1.2), (0.5, 1.8), (0.8, 1.8),
+    (0.8, 1.2), (1.5, 1.2), (1.5, 2.0), (1.8, 2.0), (1.8, 1.2),  
+    (2.4, 1.2), (2.4, 0.8), (1.8, 0.8), (1.8, 0.4), (1.5, 0.4), 
+    (1.5, 0.8), (1.0, 0.8), (1.0, 0.4), (0.7, 0.4), (0.7, 0.8),  
+    (0.0, 0.8), (0.0, 0.0)
+]),
     "R_Robot": Polygon([
-        (0, 2), (3, 2), (3, 1.4), (1.8, 1.4), (1.8, 0.8), (2.5, 0.8), (2.5, 0),
-        (0.5, 0), (0.5, 0.8), (1.2, 0.8), (1.2, 1.4), (0, 1.4), (0, 2)
-    ])
+    (0.0, 0.0), (0.3, 0.0), (0.2, 0.4), (0.5, 0.6), (0.7, 1.8), (1.0, 2.3), (1.3, 1.8), (1.5, 0.6), (1.8, 0.4), (1.7, 0.0), (2.0, 0.0), (1.2, -0.4), (0.8, 0.0), (0.0, 0.0)
+])
+
 }
 
 # --- Umgebungsdefinitionen ---
@@ -78,17 +80,28 @@ for i, scene_name in enumerate(scenes):
     start2d, goal2d, start3d, goal3d = positions[scene_name]
     limits2d = [[0, 27], [0, 27]] if scene_name == "scene5" else [[0, 24], [0, 24]] if scene_name == "scene3" else [[0, 22], [0, 20]]
     limits3d = limits2d + [[0, 360]]
-    
-    for name, robot in robots.items():
+
+    for j, (name, robot) in enumerate(robots.items()):
         is3d = name.startswith(("T_", "C_", "R_"))
         dof = 3 if is3d else 2
         limits = limits3d if dof == 3 else limits2d
         start = start3d if dof == 3 else start2d
         goal = goal3d if dof == 3 else goal2d
+
+        # --- MANUELLE START/ZIEL ANPASSUNG FÜR BENCHMARK 3 UND ROBOTER 2+3 ---
+        if i == 2:  # i=2 -> Benchmark 3
+            if j == 2:  
+                start = [[3.2, 3.3]]
+                goal = [[15.2, 15.0]]
+            elif j == 3:  
+                start = [[2.4, 4, 45.0]]
+                goal = [[16.6, 13.2, 200.0]]
+
         label = f"{name.replace('_', '-')}-Roboter ({dof}DOF) in {scene_name}"
         bench_name = f"{dof}DOF_{name}_{scene_name}"
         checker = MobileRobotCollisionChecker(robot, scene, limits)
         benchList.append(Benchmark(bench_name, checker, start, goal, label, dof))
+
 
 # --- Funktion zum Erzeugen zufälliger Benchmarks ---
 def create_random_benchmark(name_prefix="random", dof=2, seed=None):

@@ -203,7 +203,6 @@ def plot_collision_tests(robot_shape: BaseGeometry,
     plt.show()
 
 
-    # HelperFunction.py
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -249,11 +248,19 @@ def plot_configuration_space(ax, graph, path, start, goal, dof, collision_checke
             ax.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]], color='gray', linewidth=0.3)
         pts = np.array([graph.nodes[n]['pos'] for n in graph.nodes()])
         ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], c='k', s=2)
+
+        # Pfad einzeichnen und Kantenlängen dranschreiben
         path_xyz = np.array(path)
         ax.plot(path_xyz[:, 0], path_xyz[:, 1], path_xyz[:, 2], 'b-', linewidth=2)
+        for p1, p2 in zip(path_xyz[:-1], path_xyz[1:]):
+            length = np.linalg.norm(p2 - p1)
+            midpoint = (p1 + p2) / 2
+            ax.text(midpoint[0], midpoint[1], midpoint[2], f"{length:.2f}", fontsize=8, color='red')
+
         ax.scatter(start[0], start[1], start[2], c='g', s=50, marker='o')
         ax.scatter(goal[0], goal[1], goal[2], c='r', s=50, marker='^')
         robot_dot = ax.scatter([], [], [], c='r', s=30)
+
     else:
         ax.set_xlim(collision_checker.limits[0])
         ax.set_ylim(collision_checker.limits[1])
@@ -262,12 +269,20 @@ def plot_configuration_space(ax, graph, path, start, goal, dof, collision_checke
             ax.plot([p1[0], p2[0]], [p1[1], p2[1]], color='gray', linewidth=0.3)
         pts = np.array([graph.nodes[n]['pos'] for n in graph.nodes()])
         ax.plot(pts[:, 0], pts[:, 1], 'k.', markersize=2)
+
+        # Pfad einzeichnen und Kantenlängen dranschreiben
         pa = np.array(path)
         ax.plot(pa[:, 0], pa[:, 1], 'b-', linewidth=2)
+        for p1, p2 in zip(pa[:-1], pa[1:]):
+            length = np.linalg.norm(p2 - p1)
+            midpoint = (p1 + p2) / 2
+            ax.text(midpoint[0], midpoint[1], f"{length:.2f}", fontsize=8, color='red')
+
         ax.scatter(start[0], start[1], c='g', s=50)
         ax.scatter(goal[0], goal[1], c='r', s=50)
         robot_dot, = ax.plot([], [], 'ro', markersize=6)
     return robot_dot
+
 
 def plot_work_space(ax, scene, robot_shape, start, goal, collision_checker):
     limits = collision_checker.limits
@@ -377,7 +392,6 @@ import os
 from tqdm import tqdm
 from numbers import Number
 
-
 def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config, benchmarks, 
                                               max_attempts=10, max_scalings=5, scale_factor=1.5,
                                               params_output_file='found_params.json'):
@@ -385,33 +399,14 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
     Führt Benchmarks durch und versucht bei Fehlschlag adaptive Skalierung.
     Speichert initiale Parameter jedes Verfahrens und alle erfolgreichen Läufe
     in einer JSON-Datei, ohne vorhandene Einträge zu überschreiben.
-
-    Args:
-        planner_cls: Planer-Klasse für compute_prm_path.
-        planner_name (str): Name des Planers (für Ausgabe).
-        config: Konfigurationsobjekt (dict oder Objekt) mit numerischen Parametern.
-        benchmarks (list): Liste von Benchmark-Objekten.
-        max_attempts (int): Versuche je Parameter-Set.
-        max_scalings (int): Max. Skalierungsdurchläufe bei Fehlschlag.
-        scale_factor (float): Faktor pro Skalierungsschritt.
-        params_output_file (str): Pfad zur JSON-Datei für Parameter und Läufe.
-
-    Returns:
-        list of dict: Ergebnisse pro Benchmark.
     """
 
     def _scale_config(cfg, factor):
-        """
-        Tiefe Kopie von cfg, bei der:
-        - aus int-Vorlagen nach Skalierung wieder int wird
-        - float-Vorlagen float bleiben
-        """
         new_cfg = copy.deepcopy(cfg)
         if isinstance(cfg, dict):
             for k, v in cfg.items():
                 if isinstance(v, Number) and not isinstance(v, bool):
                     scaled = v * factor
-                    # wenn original ein int war, zurück zu int casten
                     new_cfg[k] = int(scaled) if type(v) is int else scaled
         elif hasattr(new_cfg, '__dict__'):
             for attr, val in vars(new_cfg).items():
@@ -422,7 +417,6 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
             raise TypeError(f"Cannot scale config of type {type(cfg)}")
         return new_cfg
 
-
     def _cfg_to_dict(cfg):
         if isinstance(cfg, dict):
             return cfg.copy()
@@ -431,36 +425,12 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
         else:
             return {}
 
-        # Lade oder initialisiere found_params
+    # Lade oder initialisiere found_params
     found_params = {}
     if os.path.exists(params_output_file):
         try:
             with open(params_output_file, 'r') as f:
                 raw = json.load(f)
-            # Umwandlung der alten Liste in neues Dict-Format
-            if isinstance(raw, list):
-                grouped = {}
-                for entry in raw:
-                    pl = entry.get('Planner', 'Unknown')
-                    if pl not in grouped:
-                        grouped[pl] = {'initialConfig': None, 'runs': []}
-                    if grouped[pl]['initialConfig'] is None:
-                        grouped[pl]['initialConfig'] = entry.get('Parameters', {})
-                    grouped[pl]['runs'].append({'Benchmark': entry.get('Benchmark'), 'Parameters': entry.get('Parameters', {})})
-                found_params = grouped
-            elif isinstance(raw, dict):
-                found_params = raw
-        except Exception:
-            found_params = {}
-    # Sicherstellen, dass found_params ein Dict ist
-    if not isinstance(found_params, dict):
-        found_params = {}
-    found_params = {}
-    if os.path.exists(params_output_file):
-        try:
-            with open(params_output_file, 'r') as f:
-                raw = json.load(f)
-            # Liste in dict umwandeln, falls nötig
             if isinstance(raw, list):
                 grouped = {}
                 for entry in raw:
@@ -469,7 +439,6 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
                         'initialConfig': None,
                         'runs': []
                     })
-                    # falls initialConfig noch nicht gesetzt
                     if grouped[pl]['initialConfig'] is None:
                         grouped[pl]['initialConfig'] = entry.get('Parameters', {})
                     grouped[pl]['runs'].append({
@@ -482,7 +451,6 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
         except Exception:
             found_params = {}
 
-    # Sicherstellen, dass Struktur für diesen Planner vorhanden ist
     if planner_name not in found_params:
         found_params[planner_name] = {
             'initialConfig': _cfg_to_dict(config),
@@ -505,13 +473,22 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
         # 1) Versuche mit Original-Config
         for _ in range(max_attempts):
             t0 = time.time()
-            path_ids, graph = compute_prm_path(planner_cls, bm.collisionChecker, start, goal, config)
-            t1 = time.time()
-            if path_ids:
+            try:
+                path_ids, graph = compute_prm_path(planner_cls, bm.collisionChecker, start, goal, config)
+                # 🛡️ Prüfen, ob Pfad und Graph valide sind
+                if not path_ids or graph is None or len(graph.nodes) == 0:
+                    path_ids = None
+                    graph = None
+                    continue
                 found = True
                 used_cfg = config
-                duration = round(t1 - t0, 3)
+                duration = round(time.time() - t0, 3)
                 break
+            except Exception as e:
+                print(f"❌ {planner_name}: Exception während Pfadsuche: {e}")
+                graph = None
+                path_ids = None
+                continue
 
         # 2) Adaptive Skalierung
         if not found:
@@ -519,39 +496,30 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
                 scaled_cfg = _scale_config(config, scale_factor ** scale_iter)
                 for _ in range(max_attempts):
                     t0 = time.time()
-                    path_ids, graph = compute_prm_path(planner_cls, bm.collisionChecker, start, goal, scaled_cfg)
-                    t1 = time.time()
-                    if path_ids:
+                    try:
+                        path_ids, graph = compute_prm_path(planner_cls, bm.collisionChecker, start, goal, scaled_cfg)
+                        if not path_ids or graph is None or len(graph.nodes) == 0:
+                            path_ids = None
+                            graph = None
+                            continue
                         found = True
                         used_cfg = scaled_cfg
-                        duration = round(t1 - t0, 3)
+                        duration = round(time.time() - t0, 3)
                         break
+                    except Exception as e:
+                        print(f"❌ {planner_name}: Exception während Skalierungsversuch: {e}")
+                        graph = None
+                        path_ids = None
+                        continue
                 if found:
                     break
 
-        # Dokumentiere erfolgreichen Lauf
-        if found and used_cfg is not None:
+        # Dokumentiere erfolgreichen Lauf oder Fehler
+        if found and used_cfg is not None and path_ids and len(graph.nodes) > 0:
             new_runs.append({
                 'Benchmark': idx,
                 'Parameters': _cfg_to_dict(used_cfg)
             })
-
-        # Ergebnisse erfassen
-        if not found:
-            results.append({
-                'Benchmark': idx,
-                'Planner': planner_name,
-                'Time [s]': None,
-                'Roadmap Size': len(graph.nodes) if graph else 0,
-                'Path Points': 0,
-                'Path Length': None,
-                'Path': None,
-                'Graph': graph,
-                'CollisionChecker': bm.collisionChecker,
-                'Start': start,
-                'Goal': goal
-            })
-        else:
             path = [graph.nodes[n]['pos'] for n in path_ids]
             results.append({
                 'Benchmark': idx,
@@ -564,10 +532,25 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
                 'Graph': graph,
                 'CollisionChecker': bm.collisionChecker,
                 'Start': start,
-                'Goal': goal
+                'Goal': goal,
+                'Error': None
+            })
+        else:
+            results.append({
+                'Benchmark': idx,
+                'Planner': planner_name,
+                'Time [s]': None,
+                'Roadmap Size': len(graph.nodes) if graph else 0,
+                'Path Points': 0,
+                'Path Length': None,
+                'Path': None,
+                'Graph': graph,
+                'CollisionChecker': bm.collisionChecker,
+                'Start': start,
+                'Goal': goal,
+                'Error': "Kein Pfad gefunden oder leerer Graph"
             })
 
-    # Neue Läufe hinzufügen und speichern
     if new_runs:
         found_params[planner_name]['runs'].extend(new_runs)
         try:
@@ -580,6 +563,7 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
         print(f"ℹ️ Keine neuen erfolgreichen Läufe für '{planner_name}'.")
 
     return results
+
 
 
 def animate_saved_result(results, selected_benchmark, selected_planner,

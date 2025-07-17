@@ -161,5 +161,5 @@ class RRT(PRMBase):
                 self.graph.add_node(self.lastGeneratedNodeNumber, pos=newPos)
                 self.graph.add_edge(result[1],self.lastGeneratedNodeNumber)
                 self.lastGeneratedNodeNumber +=1
-            
- 
+
+        return []
