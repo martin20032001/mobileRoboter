@@ -707,6 +707,7 @@ from shapely.affinity import rotate, translate
 import matplotlib as mpl
 from IPython.display import HTML
 from IPMobileRobotCollisionChecker import MobileRobotCollisionChecker
+from IPMultiMobileRobotCollisionChecker import MultiMobileRobotCollisionChecker
 from HelperFunction import transform_robot
 from matplotlib.animation import FFMpegWriter
 def animate_robot_scene(
@@ -719,7 +720,9 @@ def animate_robot_scene(
     robot_size_scale=1.0,
     animation_speed=80,
     embed_limit_mb=100,
-    robot_speed=0.2
+    robot_speed=0.2,
+    num_robots=1,
+    skip_collision_free_start=False
 ):
     """
     Erstellt und animiert eine Roboterfahrt mit konstanter Geschwindigkeit.
@@ -747,7 +750,9 @@ def animate_robot_scene(
         leg_right = LineString([(0, -0.5 * scale), (0.4 * scale, -1.2 * scale)]).buffer(0.08 * scale)
         return head.union(body).union(arms).union(leg_left).union(leg_right)
 
-    robot_shape = create_stickman(scale=robot_size_scale)
+    robot_shapes = []
+    for i in range(num_robots):
+        robot_shapes.append(create_stickman(scale=robot_size_scale))
 
     # Szene mit nicht überlappenden Hindernissen
     scene = {}
@@ -789,47 +794,73 @@ def animate_robot_scene(
         i += 1
 
     # Kollisionschecker
-    checker = MobileRobotCollisionChecker(robot_shape, scene, limits=[[0, area_size], [0, area_size], [0, 360]])
+    single_checkers = []
+    for i in range(num_robots):
+        single_checkers.append(MobileRobotCollisionChecker(robot_shapes[i], scene, limits=[[0, area_size], [0, area_size], [0, 360]]))
+
+    dofs = [3] * num_robots  # Jeder Roboter hat 3 DOFs (x, y, theta)
+    multi_checker = MultiMobileRobotCollisionChecker(num_robots, robot_shapes, scene, dofs, sum(dofs), limits=[[0, area_size], [0, area_size], [0, 360]])
 
     # Wegpunkte nur im Randbereich generieren
+    def generate_random_x_y_theta():
+        side = np.random.choice(["top", "bottom", "left", "right"])
+        if side == "top":
+            x = np.random.uniform(margin, area_size - margin)
+            y = np.random.uniform(area_size - edge_band, area_size - margin)
+        elif side == "bottom":
+            x = np.random.uniform(margin, area_size - margin)
+            y = np.random.uniform(margin, edge_band)
+        elif side == "left":
+            x = np.random.uniform(margin, edge_band)
+            y = np.random.uniform(margin, area_size - margin)
+        else:  # right
+            x = np.random.uniform(area_size - edge_band, area_size - margin)
+            y = np.random.uniform(margin, area_size - margin)
+        theta = np.random.uniform(0, 360)
+        return x, y, theta
+    
     waypoints = []
     for _ in range(num_waypoints):
         for _ in range(50):  # max. 50 Versuche pro Wegpunkt
-            side = np.random.choice(["top", "bottom", "left", "right"])
-            if side == "top":
-                x = np.random.uniform(margin, area_size - margin)
-                y = np.random.uniform(area_size - edge_band, area_size - margin)
-            elif side == "bottom":
-                x = np.random.uniform(margin, area_size - margin)
-                y = np.random.uniform(margin, edge_band)
-            elif side == "left":
-                x = np.random.uniform(margin, edge_band)
-                y = np.random.uniform(margin, area_size - margin)
-            else:  # right
-                x = np.random.uniform(area_size - edge_band, area_size - margin)
-                y = np.random.uniform(margin, area_size - margin)
-
-            theta = np.random.uniform(0, 360)
-            if not checker.pointInCollision([x, y, theta]):
-                waypoints.append([x, y, theta])
+            
+            pos = []
+            for i in range(num_robots):
+                x, y, theta = generate_random_x_y_theta()
+                pos.extend([x, y, theta])
+                
+            if not skip_collision_free_start:
+                if not multi_checker.pointInCollision(pos):
+                    waypoints.append(pos)
+                    break
+            else:
+                waypoints.append(pos)
                 break
 
     # Trajektorie mit konstanter Geschwindigkeit
     trajectory = []
     for i in range(len(waypoints) - 1):
-        p1, p2 = np.array(waypoints[i]), np.array(waypoints[i + 1])
+        p1 = np.array(waypoints[i])
+        p2 = np.array(waypoints[i + 1])
         distance = np.linalg.norm(p2[:2] - p1[:2])
         num_steps = max(int(distance / robot_speed), 1)
+
         for t in np.linspace(0, 1, num_steps):
             pos = (1 - t) * p1 + t * p2
-            pos[2] %= 360  # Winkel normalisieren
+            for j in range(num_robots):
+                theta_idx = j * 3 + 2
+                θ1 = p1[theta_idx]
+                θ2 = p2[theta_idx]
+                dθ = ((θ2 - θ1 + 180) % 360) - 180
+                θ = (θ1 + t * dθ) % 360
+                pos[theta_idx] = θ
+
             trajectory.append(pos.tolist())
 
     # Plot vorbereiten
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.set_aspect('equal')
-    ax.set_xlim(checker.limits[0])
-    ax.set_ylim(checker.limits[1])
+    ax.set_xlim(multi_checker.limits[0])
+    ax.set_ylim(multi_checker.limits[1])
     ax.set_title("Roboterfahrt")
 
     # Hindernisse zeichnen
@@ -844,33 +875,52 @@ def animate_robot_scene(
                              facecolor='lightgray', edgecolor='black', alpha=0.7)
             ax.add_patch(circ)
 
-    robot_patch = []  # Platzhalter für Roboterteile
+    robot_patches = []  # Platzhalter für Roboterteile
 
     # Animationsfunktion
     def update(frame):
-        nonlocal robot_patch
-        for patch in robot_patch:
+        nonlocal robot_patches
+        for patch in robot_patches:
             patch.remove()
-        pose = trajectory[frame]
-        collision = checker.pointInCollision(pose)
-        transformed_robot = transform_robot(pose, robot_shape)
-        color = 'red' if collision else 'green'
-        patches = []
-        if isinstance(transformed_robot, Polygon):
-            x, y = transformed_robot.exterior.xy
-            patch = MplPolygon(np.column_stack((x, y)), closed=True,
-                               facecolor=color, edgecolor='black', alpha=0.6)
-            ax.add_patch(patch)
-            patches.append(patch)
-        elif isinstance(transformed_robot, MultiPolygon):
-            for poly in transformed_robot.geoms:
-                x, y = poly.exterior.xy
+        robot_patches = []
+        
+        pose = trajectory[frame]  # z. B. [x1, y1, θ1, x2, y2, θ2, ..., xN, yN, θN]
+        collisions = []
+        for i in range(num_robots):
+            idx = i * 3
+            subpose = pose[idx:idx+3]
+            
+            # Add other robots to the scene for collision checking
+            for j in range(num_robots):
+                if j == i:
+                    continue  # don't include self
+                jdx = j * 3
+                other_pose = pose[jdx:jdx+3]
+                other_shape = robot_shapes[j]
+                transformed_other = transform_robot(other_pose, other_shape)
+                single_checkers[i].scene[f"robot_{j}"] = transformed_other
+            
+            collision = single_checkers[i].pointInCollision(subpose)
+            
+            # Entferne Roboter wieder aus der szene
+            keys_to_remove = [key for key in single_checkers[i].scene if key.startswith("robot_")]
+            for key in keys_to_remove:
+                del single_checkers[i].scene[key]
+            
+            collisions.append(collision)
+            color = 'red' if collision else 'green'
+
+            shape = robot_shapes[i]
+            transformed_robot = transform_robot(subpose, shape)
+
+            if isinstance(transformed_robot, Polygon):
+                x, y = transformed_robot.exterior.xy
                 patch = MplPolygon(np.column_stack((x, y)), closed=True,
-                                   facecolor=color, edgecolor='black', alpha=0.6)
+                                facecolor=color, edgecolor='black', alpha=0.6)
                 ax.add_patch(patch)
-                patches.append(patch)
-        robot_patch = patches
-        ax.set_title("Kollision" if collision else "Frei")
+                robot_patches.append(patch)
+
+        ax.set_title("Kollision" if any(collisions) else "Frei")
 
     writer = FFMpegWriter(fps=30)  # 30 Bilder pro Sekunde
 
