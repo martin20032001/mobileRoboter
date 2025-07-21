@@ -440,7 +440,7 @@ from numbers import Number
 
 def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config, benchmarks, 
                                               max_attempts=10, max_scalings=5, scale_factor=1.5,
-                                              params_output_file='found_params.json'):
+                                              params_output_file='found_params.json', multi_robot=False):
     """
     Führt Benchmarks durch und versucht bei Fehlschlag adaptive Skalierung.
     Speichert initiale Parameter jedes Verfahrens und alle erfolgreichen Läufe
@@ -508,8 +508,15 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
     print(f"🔍 Starte Benchmarks für {planner_name}...")
 
     for idx, bm in enumerate(tqdm(benchmarks, desc=f"{planner_name} Benchmarks", leave=False)):
-        start = bm.startList[0]
-        goal = bm.goalList[0]
+        
+        if multi_robot:
+            # flatten start, goal lists, sum up dof list to create one large configuration space
+            start = [number for coords in bm.startList for number in coords]
+            goal = [number for coords in bm.goalList for number in coords]
+        else:
+            start = bm.startList[0]
+            goal = bm.goalList[0]
+        
         found = False
         graph = None
         path_ids = []
@@ -539,6 +546,7 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
         # 2) Adaptive Skalierung
         if not found:
             for scale_iter in range(1, max_scalings + 1):
+                print("apply adaptive scaling", scale_iter, "/", max_scalings+1, "to benchmark", idx)
                 scaled_cfg = _scale_config(config, scale_factor ** scale_iter)
                 for _ in range(max_attempts):
                     t0 = time.time()
