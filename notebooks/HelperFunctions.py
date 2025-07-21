@@ -10,6 +10,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib import rcParams
+import pickle
 
 from tqdm import tqdm
 from numbers import Number
@@ -623,23 +625,21 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
 def animate_saved_result(results, selected_benchmark, selected_planner,
                          steps_per_segment=3, save_path: str = None, fps: int = 30):
     """
-    Animiert den gespeicherten Pfad mit Fortschrittsanzeige und hoher Auflösung.
+    Animiert den gespeicherten Pfad.
+    Zeigt die Animation immer im Notebook und speichert optional als MP4 mit Fortschrittsanzeige.
     """
-    # Retina-Optimierung (falls im Notebook)
-    ipython = get_ipython()
-    if ipython is not None:
-        ipython.run_line_magic('matplotlib', 'inline')
-        ipython.run_line_magic('config', "InlineBackend.figure_format = 'retina'")
-
     plt.rcParams.update({
-        'figure.dpi': 300,
-        'savefig.dpi': 300,
-        'font.size': 14,
+        'figure.dpi': 100,
+        'savefig.dpi': 100,
+        'font.size': 12,
         'lines.antialiased': True,
         'patch.antialiased': True
     })
 
-    match = next((r for r in results if r['Benchmark'] == selected_benchmark and r['Planner'] == selected_planner), None)
+    # Suche passenden Benchmark und Planner
+    match = next(
+        (r for r in results if r['Benchmark'] == selected_benchmark and r['Planner'] == selected_planner), None
+    )
     if not match or match['Path'] is None:
         print("❌ Kein Pfad gefunden für diese Auswahl.")
         return
@@ -652,22 +652,23 @@ def animate_saved_result(results, selected_benchmark, selected_planner,
     robot_shape = collision_checker.robot_shape
     scene = collision_checker.scene
     dof = len(start)
+
+    # Interpolierter Pfad mit gleichmäßiger Geschwindigkeit
     total_steps = steps_per_segment * len(path) * 10
     interp = interpolate_path_equal_speed(path, total_steps=total_steps)
 
-    fig = plt.figure(figsize=(14, 7), dpi=300)
-
+    fig = plt.figure(figsize=(10, 5), dpi=100)
     ax1 = fig.add_subplot(1, 2, 1, projection='3d') if dof == 3 else fig.add_subplot(1, 2, 1)
     ax1.set_title(f'Konfigurationsraum ({selected_planner})')
-    coord1 = (ax1.text2D(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12, verticalalignment='top',
-                         bbox=dict(facecolor='white', alpha=0.7))
-              if dof == 3
-              else ax1.text(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12, verticalalignment='top',
-                            bbox=dict(facecolor='white', alpha=0.7)))
 
+    coord1 = (ax1.text2D(0.02, 0.95, '', transform=ax1.transAxes, fontsize=10,
+                         verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
+              if dof == 3
+              else ax1.text(0.02, 0.95, '', transform=ax1.transAxes, fontsize=10,
+                            verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7)))
     ax2 = fig.add_subplot(1, 2, 2)
     ax2.set_title(f'Arbeitsraum ({selected_planner})')
-    coord2 = ax2.text(0.02, 0.95, '', transform=ax2.transAxes, fontsize=12,
+    coord2 = ax2.text(0.02, 0.95, '', transform=ax2.transAxes, fontsize=10,
                       verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
 
     robot_dot = plot_configuration_space(ax1, graph, path, start, goal, dof, collision_checker)
@@ -679,24 +680,29 @@ def animate_saved_result(results, selected_benchmark, selected_planner,
     ani = animation.FuncAnimation(fig, animate_func, init_func=init,
                                   frames=len(interp), interval=1000 // fps)
 
+    # 📺 Zeige Animation im Notebook
+    from IPython.display import HTML
+    display(HTML(ani.to_jshtml()))
+
+    # 💾 Zusätzlich speichern mit Fortschrittsanzeige
     if save_path:
-        print(f"💾 Speichere Animation nach {save_path}...")
-        Writer = animation.writers['ffmpeg']
-        writer = Writer(fps=fps, metadata=dict(artist='PRM'), bitrate=12000)
+        try:
+            Writer = animation.writers['ffmpeg']
+            writer = Writer(fps=fps, metadata=dict(artist='PRM'), bitrate=3000)
 
-        # Fortschrittsanzeige beim Rendern
-        with tqdm(total=len(interp), desc="🎞 Rendering Frames") as pbar:
-            def progress_callback(current_frame, total_frames):
-                pbar.update(1)
-            ani.save(save_path, writer=writer, dpi=300,
-                     progress_callback=progress_callback)
-        print("✅ Video gespeichert unter:", save_path)
+            print(f"💾 Speichere Animation nach {save_path}...")
+            with tqdm(total=len(interp), desc="🎞 Rendering Frames") as pbar:
+                def progress_callback(current_frame, total_frames):
+                    pbar.update(1)
+                ani.save(save_path, writer=writer, dpi=100,
+                         progress_callback=progress_callback)
+            print(f"✅ Video gespeichert unter: {save_path}")
 
-    else:
-        from IPython.display import HTML
-        display(HTML(ani.to_jshtml()))
+        except Exception as e:
+            print(f"⚠️ Fehler beim Speichern mit ffmpeg: {e}")
 
     plt.close(fig)
+
 
 def animate_robot_scene(
     num_obstacles=20,
@@ -922,19 +928,6 @@ def animate_robot_scene(
 
 
 def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
-    """
-    Lädt die JSON-Datei und erstellt für jeden Parameter eine Grafik in einem
-    benutzerdefinierten Layout:
-    - Erste Zeile: 2 Plots
-    - Zweite Zeile: 4 Plots
-    - Dritte Zeile: 2 Plots
-    - Vierte Zeile: 1 Plot (zentriert)
-
-    Grid-Linien werden entfernt, die X-Achse zeigt Beschriftungen in 5er-Schritten,
-    und es werden nur Marker ohne Verbindungs-Linien gezeichnet.
-    Eine gemeinsame Legende wird einmal unterhalb des gesamten Plots angezeigt.
-    """
-
     # --- JSON laden ---
     with open(json_file, 'r') as f:
         data = json.load(f)
@@ -1005,3 +998,135 @@ def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
     plt.tight_layout()
     plt.subplots_adjust(bottom=0.1)  # Platz für die Legende schaffen
     plt.show()
+
+
+
+class PlannerRunner:
+    def __init__(self, planner_class, config, name="Planner"):
+        self.planner_class = planner_class
+        self.config = config
+        self.name = name
+
+    def run_benchmarks(self, bench_list, max_attempts=10,
+                       fps=30, steps_per_segment=5, save_animation=False, animation_dir="./animations"):
+        for idx, benchmark in enumerate(bench_list):
+            start = benchmark.startList[0]
+            goal = benchmark.goalList[0]
+            dof = len(start)
+            path_ids = []
+
+            # Suche Pfad mit mehreren Versuchen
+            for attempt in tqdm(range(1, max_attempts + 1), desc=f"{self.name} Benchmark {idx+1}/{len(bench_list)}"):
+                path_ids, graph = compute_prm_path(
+                    self.planner_class, benchmark.collisionChecker, start, goal, self.config
+                )
+                if path_ids:
+                    print(f"{self.name} Benchmark {idx}: Pfad gefunden nach {attempt} Versuchen.")
+                    break
+            else:
+                print(f"{self.name} Benchmark {idx}: Kein Pfad nach {max_attempts} Versuchen.")
+                continue
+
+            # Animation anzeigen oder speichern
+            self.visualize(graph, path_ids, start, goal, dof, benchmark,
+                           fps=fps, steps_per_segment=steps_per_segment,
+                           save=save_animation, animation_dir=animation_dir, benchmark_idx=idx)
+
+    def visualize(self, graph, path_ids, start, goal, dof, benchmark,
+                  fps=30, steps_per_segment=5, save=False, animation_dir="./animations", benchmark_idx=0):
+        path = [graph.nodes[n]['pos'] for n in path_ids]
+        total_steps = steps_per_segment * len(path)
+        interp = interpolate_path_equal_speed(path, total_steps=total_steps)
+
+        fig = plt.figure(figsize=(14, 7))
+        if dof == 3:
+            ax1 = fig.add_subplot(1, 2, 1, projection='3d')
+            coord1 = ax1.text2D(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12,
+                                verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
+        else:
+            ax1 = fig.add_subplot(1, 2, 1)
+            coord1 = ax1.text(0.02, 0.95, '', transform=ax1.transAxes, fontsize=12,
+                              verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
+        ax1.set_title(f'Konfigurationsraum ({self.name})')
+
+        ax2 = fig.add_subplot(1, 2, 2)
+        ax2.set_title(f'Arbeitsraum ({self.name})')
+        coord2 = ax2.text(0.02, 0.95, '', transform=ax2.transAxes, fontsize=12,
+                          verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7))
+
+        robot_dot = plot_configuration_space(ax1, graph, path, start, goal, dof, benchmark.collisionChecker)
+        robot_patch = plot_work_space(
+            ax2, benchmark.collisionChecker.scene, benchmark.collisionChecker.robot_shape,
+            start, goal, benchmark.collisionChecker
+        )
+
+        init = make_init_func(robot_patch, robot_dot, coord1, coord2, start, benchmark.collisionChecker.robot_shape, dof)
+        animate = make_animate_func(robot_patch, robot_dot, coord1, coord2, interp, benchmark.collisionChecker.robot_shape, dof)
+
+        ani = make_animation(fig, init, animate, len(interp), interval=1000 // fps)
+
+        if save:
+            os.makedirs(animation_dir, exist_ok=True)
+            file_name = f"{self.name}_Benchmark_{benchmark_idx}.mp4"
+            save_path = os.path.join(animation_dir, file_name)
+            print(f"Speichere Animation nach {save_path}...")
+            writer = animation.FFMpegWriter(fps=fps)
+            ani.save(save_path, writer=writer, dpi=200)
+            print(f"Animation gespeichert: {save_path}")
+        else:
+            display(HTML(ani.to_jshtml()))
+
+        plt.close(fig)
+
+
+
+def generate_animations(results_file, benchmark_idx, planners,
+                        save_dir="../animationen", fps=30,
+                        steps_per_segment=5, save=True, all_planners=True, selected_idx=0):
+
+    rcParams['animation.embed_limit'] = 2000
+
+    # Ergebnisse laden
+    with open(results_file, 'rb') as f:
+        results = pickle.load(f)
+
+    os.makedirs(save_dir, exist_ok=True)
+
+    if all_planners:
+        for planner in planners:
+            save_path = os.path.join(save_dir, f"{planner}_benchmark_{benchmark_idx}.mp4")
+            print(f"Erzeuge Animation für {planner} (Benchmark {benchmark_idx}) und speichere als {save_path}...")
+            animate_saved_result(
+                results,
+                benchmark_idx,
+                planner,
+                save_path=save_path,
+                fps=fps,
+                steps_per_segment=steps_per_segment
+            )
+            print(f"Animation gespeichert unter: {save_path}")
+    else:
+        selected_planner = planners[selected_idx]
+        if save:
+            save_path = os.path.join(save_dir, f"{selected_planner}_benchmark_{benchmark_idx}.mp4")
+            print(f"Erzeuge Animation für {selected_planner} (Benchmark {benchmark_idx}) und speichere als {save_path}...")
+            animate_saved_result(
+                results,
+                benchmark_idx,
+                selected_planner,
+                save_path=save_path,
+                fps=fps,
+                steps_per_segment=steps_per_segment
+            )
+            print(f"Animation gespeichert unter: {save_path}")
+        else:
+            print(f"Zeige Animation für {selected_planner} (Benchmark {benchmark_idx})...")
+            animate_saved_result(
+                results,
+                benchmark_idx,
+                selected_planner,
+                fps=fps,
+                steps_per_segment=steps_per_segment
+            )
+
+    print("Fertig.")
