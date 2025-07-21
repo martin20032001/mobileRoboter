@@ -1130,3 +1130,153 @@ def generate_animations(results_file, benchmark_idx, planners,
             )
 
     print("Fertig.")
+
+
+def plot_benchmark_summary(results_csv: str):
+    """
+    Lädt die Benchmark-Ergebnisse und erstellt:
+    - Eine Übersichtstabelle mit Min/Max-Highlighting.
+    - Balkendiagramme für Zeit, Roadmap-Größe, Pfadpunkte und Pfadlänge.
+    """
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    # --- Daten laden ---
+    df_results = pd.read_csv(results_csv)
+
+    # --- Mittelwerte pro Planner berechnen ---
+    pivot_avg = df_results.groupby("Planner").mean(numeric_only=True).round(3)
+    pivot_avg = pivot_avg[['Time [s]', 'Roadmap Size', 'Path Points', 'Path Length']]
+
+    # --- Min/Max-Highlighting für Tabelle ---
+    def highlight_min_max(df):
+        return df.style.apply(lambda x: [
+            'background-color: green' if v == x.min() else
+            'background-color: coral' if v == x.max() else ''
+            for v in x
+        ], axis=0)
+
+    print("Durchschnittswerte je Planungsverfahren:")
+    styled_table = highlight_min_max(pivot_avg).format("{:.3f}")
+    display(styled_table)
+
+    # --- Plots vorbereiten ---
+    metrics = ['Time [s]', 'Roadmap Size', 'Path Points', 'Path Length']
+    titles = ['Suchzeit (Sekunden)', 'Größe der Roadmap (Knoten)',
+              'Anzahl Punkte im Pfad', 'Pfadlänge (euklidisch)']
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+    axes = axes.flatten()
+
+    unique_planners = df_results['Planner'].unique()
+    palette = dict(zip(unique_planners, sns.color_palette("Set2", n_colors=len(unique_planners))))
+
+    for i, (metric, title) in enumerate(zip(metrics, titles)):
+        sns.barplot(
+            data=df_results,
+            x='Planner',
+            y=metric,
+            hue='Planner',
+            palette=palette,
+            dodge=False,
+            ax=axes[i]
+        )
+
+        axes[i].set_title(title)
+        axes[i].set_xlabel("Planungsverfahren")
+        axes[i].set_ylabel(title)
+        axes[i].grid(True, linestyle='--', alpha=0.6)
+        
+        if i != 0:
+            legend = axes[i].get_legend()
+            if legend is not None:
+                legend.remove()
+
+    # Gemeinsame Legende unten hinzufügen
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', ncol=len(unique_planners), frameon=False)
+    plt.tight_layout(rect=[0, 0.05, 1, 1]) 
+    plt.show()
+
+def plot_benchmark_metrics(results_csv: str):
+    """
+    Plottet pro Benchmark und Planungsverfahren die Metriken:
+    - Time [s] (logarithmisch)
+    - Roadmap Size
+    - Path Points
+    - Path Length
+    """
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    # --- CSV laden ---
+    df_results = pd.read_csv(results_csv)
+
+    metrics = ['Time [s]', 'Roadmap Size', 'Path Points', 'Path Length']
+
+    # Planner in fester Reihenfolge 
+    all_planners = ['BasicPRM', 'LazyPRM', 'VisPRM', 'RRTSimple']
+    planners_in_data = [p for p in all_planners if p in df_results['Planner'].unique()]
+
+    # Benchmarks 1-basiert
+    benchmarks = sorted(df_results['Benchmark'].unique())
+    benchmarks_1based = [b + 1 for b in benchmarks]
+
+    # Feste Farben für Planner
+    planner_colors = {
+        'BasicPRM': 'green',
+        'LazyPRM': 'orange',
+        'RRTSimple': 'blue',
+        'VisPRM': 'purple'
+    }
+
+    # --- Subplot-Layout ---
+    n_cols = 2
+    n_rows = int(np.ceil(len(metrics) / n_cols))
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(16, 6 * n_rows))
+    axes = axes.flatten()
+
+    for idx, metric in enumerate(metrics):
+        ax = axes[idx]
+        x = np.arange(len(benchmarks))
+        width = 0.8 / len(planners_in_data)  # Balkenbreite für alle Planner
+
+        for i, planner in enumerate(planners_in_data):
+            values = []
+            for benchmark in benchmarks:
+                subset = df_results[
+                    (df_results['Planner'] == planner) &
+                    (df_results['Benchmark'] == benchmark)
+                ]
+                mean_value = subset[metric].mean() if not subset.empty else 0.001
+                values.append(mean_value)
+
+            offset = x + (i - len(planners_in_data)/2) * width
+            ax.bar(offset, values, width=width, label=planner, color=planner_colors.get(planner, None))
+
+        ax.set_title(f'{metric} pro Benchmark und Planer', fontsize=11)
+        ax.set_xlabel('Benchmark', fontsize=9)
+        ax.set_ylabel(metric, fontsize=9)
+        ax.set_xticks(x)
+        ax.set_xticklabels(benchmarks_1based, rotation=45, ha='right', fontsize=8)
+
+        if metric == 'Time [s]':
+            ax.set_yscale('log')
+            ax.set_ylim(1e-1, 100)  # Anpassbarer Bereich
+            ax.set_ylabel('Time [s] (logarithmisch)', fontsize=9)
+
+        ax.grid(True, linestyle='--', alpha=0.5)
+
+    # Überzählige Achsen löschen
+    for i in range(len(metrics), len(axes)):
+        fig.delaxes(axes[i])
+
+    # Gemeinsame Legende unten
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', ncol=len(planners_in_data),
+               fontsize=9, frameon=False)
+
+    plt.tight_layout(rect=[0, 0.05, 1, 1])  # Platz für Legende unten
+    plt.show()
