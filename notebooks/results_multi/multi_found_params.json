@@ -1,0 +1,243 @@
+{
+    "BasicPRM": {
+        "initialConfig": {
+            "radius": 10,
+            "numNodes": 300
+        },
+        "runs": [
+            {
+                "Benchmark": 0,
+                "Parameters": {
+                    "radius": 10,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 1,
+                "Parameters": {
+                    "radius": 10,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 2,
+                "Parameters": {
+                    "radius": 10,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 3,
+                "Parameters": {
+                    "radius": 10,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 4,
+                "Parameters": {
+                    "radius": 10,
+                    "numNodes": 300
+                }
+            },
+            {
+                "Benchmark": 5,
+                "Parameters": {
+                    "radius": 15,
+                    "numNodes": 450
+                }
+            },
+            {
+                "Benchmark": 6,
+                "Parameters": {
+                    "radius": 15,
+                    "numNodes": 450
+                }
+            },
+            {
+                "Benchmark": 7,
+                "Parameters": {
+                    "radius": 15,
+                    "numNodes": 450
+                }
+            },
+            {
+                "Benchmark": 8,
+                "Parameters": {
+                    "radius": 15,
+                    "numNodes": 450
+                }
+            },
+            {
+                "Benchmark": 9,
+                "Parameters": {
+                    "radius": 22,
+                    "numNodes": 675
+                }
+            }
+        ]
+    },
+    "LazyPRM": {
+        "initialConfig": {
+            "initialRoadmapSize": 2000,
+            "updateRoadmapSize": 200,
+            "kNearest": 50,
+            "maxIterations": 20
+        },
+        "runs": [
+            {
+                "Benchmark": 0,
+                "Parameters": {
+                    "initialRoadmapSize": 2000,
+                    "updateRoadmapSize": 200,
+                    "kNearest": 50,
+                    "maxIterations": 20
+                }
+            },
+            {
+                "Benchmark": 1,
+                "Parameters": {
+                    "initialRoadmapSize": 2000,
+                    "updateRoadmapSize": 200,
+                    "kNearest": 50,
+                    "maxIterations": 20
+                }
+            },
+            {
+                "Benchmark": 2,
+                "Parameters": {
+                    "initialRoadmapSize": 2000,
+                    "updateRoadmapSize": 200,
+                    "kNearest": 50,
+                    "maxIterations": 20
+                }
+            },
+            {
+                "Benchmark": 3,
+                "Parameters": {
+                    "initialRoadmapSize": 2000,
+                    "updateRoadmapSize": 200,
+                    "kNearest": 50,
+                    "maxIterations": 20
+                }
+            },
+            {
+                "Benchmark": 4,
+                "Parameters": {
+                    "initialRoadmapSize": 2000,
+                    "updateRoadmapSize": 200,
+                    "kNearest": 50,
+                    "maxIterations": 20
+                }
+            }
+        ]
+    },
+    "VisPRM": {
+        "initialConfig": {
+            "ntry": 40
+        },
+        "runs": [
+            {
+                "Benchmark": 0,
+                "Parameters": {
+                    "ntry": 40
+                }
+            },
+            {
+                "Benchmark": 1,
+                "Parameters": {
+                    "ntry": 60
+                }
+            },
+            {
+                "Benchmark": 2,
+                "Parameters": {
+                    "ntry": 135
+                }
+            },
+            {
+                "Benchmark": 3,
+                "Parameters": {
+                    "ntry": 135
+                }
+            },
+            {
+                "Benchmark": 4,
+                "Parameters": {
+                    "ntry": 40
+                }
+            }
+        ]
+    },
+    "RRTSimple": {
+        "initialConfig": {
+            "numberOfGeneratedNodes": 500,
+            "testGoalAfterNumberOfNodes": 10
+        },
+        "runs": [
+            {
+                "Benchmark": 0,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 500,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 1,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 750,
+                    "testGoalAfterNumberOfNodes": 15
+                }
+            },
+            {
+                "Benchmark": 2,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 500,
+                    "testGoalAfterNumberOfNodes": 10
+                }
+            },
+            {
+                "Benchmark": 3,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 750,
+                    "testGoalAfterNumberOfNodes": 15
+                }
+            },
+            {
+                "Benchmark": 4,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 1125,
+                    "testGoalAfterNumberOfNodes": 22
+                }
+            },
+            {
+                "Benchmark": 5,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 1687,
+                    "testGoalAfterNumberOfNodes": 33
+                }
+            },
+            {
+                "Benchmark": 6,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 1125,
+                    "testGoalAfterNumberOfNodes": 22
+                }
+            },
+            {
+                "Benchmark": 7,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 750,
+                    "testGoalAfterNumberOfNodes": 15
+                }
+            },
+            {
+                "Benchmark": 9,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 1125,
+                    "testGoalAfterNumberOfNodes": 22
+                }
+            }
+        ]
+    }
+}
