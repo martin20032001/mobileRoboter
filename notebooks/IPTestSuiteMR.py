@@ -2,7 +2,7 @@ from shapely.geometry import box, Point, LineString, Polygon
 from shapely.affinity import translate
 from IPBenchmark import Benchmark
 from IPMobileRobotCollisionChecker import MobileRobotCollisionChecker
-from HelperFunction import generate_random_polygon_shape
+from HelperFunctions import generate_random_polygon_shape
 import random
 
 # Roboterdefinitionen

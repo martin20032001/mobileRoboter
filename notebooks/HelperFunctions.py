@@ -1,18 +1,35 @@
-# Filename: HelperFunction.py
-from shapely.geometry.base import BaseGeometry
-from shapely import affinity
+# Filename: HelperFunctions.py
+import os
+import copy
+import time
+import json
 import random
 import math
-from shapely.geometry import Polygon, MultiPoint, Point
-import matplotlib.pyplot as plt
-from IPython.display import clear_output
-import time
-from tqdm.notebook import tqdm
+
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from IPython.display import display, HTML
-from matplotlib import rc
-import os
+import pandas as pd
+
+from tqdm import tqdm
+from numbers import Number
+
+from matplotlib import rc, animation
+from matplotlib.gridspec import GridSpec
+from matplotlib.animation import FuncAnimation, FFMpegWriter
+from matplotlib.patches import Polygon as MplPolygon, Circle as MplCircle
+
+from shapely import affinity
+from shapely.affinity import translate, rotate
+from shapely.geometry import Polygon, Point, LineString, MultiPolygon, MultiPoint
+from shapely.geometry.base import BaseGeometry
+
+from IPMobileRobotCollisionChecker import MobileRobotCollisionChecker
+from IPMultiMobileRobotCollisionChecker import MultiMobileRobotCollisionChecker
+
+from IPython.display import clear_output, HTML, display
+from IPython import get_ipython
+get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
 
 class SceneBuilder:
     """
@@ -201,13 +218,6 @@ def plot_collision_tests(robot_shape: BaseGeometry,
                 fontsize=12, ha='center', va='top')
     plt.tight_layout()
     plt.show()
-
-
-
-import numpy as np
-from shapely.affinity import translate, rotate
-import matplotlib.pyplot as plt
-from matplotlib import animation
 
 def transform_robot(pos, robot_shape, use_radians=False):
     x, y = pos[0], pos[1]
@@ -430,14 +440,6 @@ def run_benchmark(planner_cls, planner_name, config, benchmarks, max_attempts=10
         })
     return results
 
-
-import copy
-import time
-import json
-import os
-from tqdm import tqdm
-from numbers import Number
-
 def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config, benchmarks, 
                                               max_attempts=10, max_scalings=5, scale_factor=1.5,
                                               params_output_file='found_params.json', multi_robot=False):
@@ -618,13 +620,6 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
 
     return results
 
-from IPython import get_ipython
-get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
-
-from tqdm import tqdm
-from matplotlib import animation, pyplot as plt
-from IPython import get_ipython
-
 def animate_saved_result(results, selected_benchmark, selected_planner,
                          steps_per_segment=3, save_path: str = None, fps: int = 30):
     """
@@ -703,21 +698,6 @@ def animate_saved_result(results, selected_benchmark, selected_planner,
 
     plt.close(fig)
 
-
-
-
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from matplotlib.patches import Polygon as MplPolygon, Circle as MplCircle
-from shapely.geometry import Polygon, Point, LineString, MultiPolygon
-from shapely.affinity import rotate, translate
-import matplotlib as mpl
-from IPython.display import HTML
-from IPMobileRobotCollisionChecker import MobileRobotCollisionChecker
-from IPMultiMobileRobotCollisionChecker import MultiMobileRobotCollisionChecker
-from HelperFunction import transform_robot
-from matplotlib.animation import FFMpegWriter
 def animate_robot_scene(
     num_obstacles=20,
     num_waypoints=15,
@@ -954,10 +934,6 @@ def visualize_params_custom_layout(json_file: str, total_benchmarks: int = 30):
     und es werden nur Marker ohne Verbindungs-Linien gezeichnet.
     Eine gemeinsame Legende wird einmal unterhalb des gesamten Plots angezeigt.
     """
-    import json
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    from matplotlib.gridspec import GridSpec
 
     # --- JSON laden ---
     with open(json_file, 'r') as f:
