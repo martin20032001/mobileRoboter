@@ -299,7 +299,7 @@ def compute_prm_path(planner_cls, collision_checker, start, goal, config):
         print(f"❌ Fehler bei Pfadplanung mit {planner_cls.__name__}: {e}")
         return [], planner.graph
 
-def plot_configuration_space(ax, graph, path, start, goal, dof, collision_checker):
+def plot_configuration_space(ax, graph, path, start, goal, dof, collision_checker, skip_edge_length=False):
     if dof == 3:
         for u, v in graph.edges():
             p1, p2 = graph.nodes[u]['pos'], graph.nodes[v]['pos']
@@ -313,7 +313,8 @@ def plot_configuration_space(ax, graph, path, start, goal, dof, collision_checke
         for p1, p2 in zip(path_xyz[:-1], path_xyz[1:]):
             length = np.linalg.norm(p2 - p1)
             midpoint = (p1 + p2) / 2
-            ax.text(midpoint[0], midpoint[1], midpoint[2], f"{length:.2f}", fontsize=8, color='red')
+            if not skip_edge_length:
+                ax.text(midpoint[0], midpoint[1], midpoint[2], f"{length:.2f}", fontsize=8, color='red')
 
         ax.scatter(start[0], start[1], start[2], c='g', s=50, marker='o')
         ax.scatter(goal[0], goal[1], goal[2], c='r', s=50, marker='^')
@@ -334,7 +335,8 @@ def plot_configuration_space(ax, graph, path, start, goal, dof, collision_checke
         for p1, p2 in zip(pa[:-1], pa[1:]):
             length = np.linalg.norm(p2 - p1)
             midpoint = (p1 + p2) / 2
-            ax.text(midpoint[0], midpoint[1], f"{length:.2f}", fontsize=8, color='red')
+            if not skip_edge_length:
+                ax.text(midpoint[0], midpoint[1], f"{length:.2f}", fontsize=8, color='red')
 
         ax.scatter(start[0], start[1], c='g', s=50)
         ax.scatter(goal[0], goal[1], c='r', s=50)

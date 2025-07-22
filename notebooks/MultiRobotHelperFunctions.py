@@ -1,6 +1,7 @@
 import networkx as nx
 import random
 import math
+import os
 import numpy as np
 
 import matplotlib as mpl
@@ -8,13 +9,13 @@ import matplotlib.pyplot as plt
 
 from matplotlib import animation
 from tqdm import tqdm
-from HelperFunctions import translate, rotate, transform_robot, interpolate_path_equal_speed, make_animation, plot_configuration_space
+from HelperFunctions import translate, rotate, transform_robot, interpolate_path_equal_speed, make_animation, plot_configuration_space, compute_prm_path
 from IPTestSuiteMR import scenes, robots
 from IPBenchmark import Benchmark
 from IPMultiMobileRobotCollisionChecker import MultiMobileRobotCollisionChecker
 
 from IPython import get_ipython
-from IPython.display import display
+from IPython.display import HTML, display
 get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
 
 def generate_valid_positions(collision_checker, num_positions, xlim, ylim):
@@ -214,7 +215,8 @@ def visualize_multi_robots(graph, path_ids, robot_dofs, num_robots, collisionChe
         ax.set_title(f'Konfigurationsraum Roboter {i}')
         ax_cspaces.append(ax)
 
-        robot_dot = plot_configuration_space(ax, graph_list[i], path_list[i], benchmark.startList[i], benchmark.goalList[i], robot_dofs[i], collisionChecker)
+        robot_dot = plot_configuration_space(ax, graph_list[i], path_list[i], benchmark.startList[i], benchmark.goalList[i],
+                                             robot_dofs[i], collisionChecker, True)
         robot_dots.append(robot_dot)
 
     robot_patches = plot_combined_work_space(ax_workspace, collisionChecker.scene, collisionChecker.robot_shapes,
@@ -275,9 +277,7 @@ def animate_saved_result_multi_robots(multiRobotBenchList, results, selected_ben
             ani.save(save_path, writer=writer, dpi=300,
                      progress_callback=progress_callback)
         print("✅ Video gespeichert unter:", save_path)
-
     else:
-        from IPython.display import HTML
         display(HTML(ani.to_jshtml()))
 
     plt.close(fig)
@@ -423,3 +423,112 @@ def get_predefined_benchmarks():
     multiRobotBenchList.append(benchmark)
     
     return multiRobotBenchList
+
+def visualize_multi_robot_benchmarks(multiRobotBenchList): 
+    n = len(multiRobotBenchList)
+    cols = 5
+    rows = math.ceil(n / cols)
+
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 5, rows * 5))
+    axes = axes.flatten()
+
+    for idx, benchmark in enumerate(multiRobotBenchList):
+        ax = axes[idx]
+        checker = benchmark.collisionChecker
+        scene = checker.scene
+        robot_shapes = checker.robot_shapes
+        limits = checker.limits
+        start = benchmark.startList
+        goal = benchmark.goalList
+        num_robots = len(checker.dofs)
+
+        ax.set_xlim(0, limits[0][1] + 2)
+        ax.set_ylim(0, limits[1][1] + 2)
+        ax.set_aspect("equal")
+        ax.set_title(f"{benchmark.name}", fontsize=9)
+
+        # Hindernisse
+        for obs in scene.values():
+            if hasattr(obs, 'exterior'):
+                x, y = obs.exterior.xy
+                ax.fill(x, y, color="red", alpha=0.5)
+        
+        colors = mpl.colormaps["tab10"].colors
+        for i in range(num_robots):
+            
+            # Startposition
+            if len(start[i]) == 3:
+                r_start = translate(rotate(robot_shapes[i], start[i][2], origin="centroid"), xoff=start[i][0], yoff=start[i][1])
+            else:
+                r_start = translate(robot_shapes[i], xoff=start[i][0], yoff=start[i][1])
+                
+            ax.fill(*r_start.exterior.xy, color=colors[i], alpha=0.7)
+            ax.text(start[i][0], start[i][1], "Start", ha="center", va="center", fontsize=7)
+
+            # Zielposition
+            if len(goal[i]) == 3:
+                r_goal = translate(rotate(robot_shapes[i], goal[i][2], origin="centroid"), xoff=goal[i][0], yoff=goal[i][1])
+            else:
+                r_goal = translate(robot_shapes[i], xoff=goal[i][0], yoff=goal[i][1])
+            ax.fill(*r_goal.exterior.xy, color=colors[i], alpha=0.3)
+            ax.text(goal[i][0], goal[i][1], "Ziel", ha="center", va="center", fontsize=7)
+
+            # Verbindung Start-Ziel
+            ax.plot(
+                [start[i][0], goal[i][0]],
+                [start[i][1], goal[i][1]],
+                linestyle="--",
+                color=colors[i],
+                linewidth=0.8
+            )
+
+    # Leere Achsen entfernen
+    for i in range(n, len(axes)):
+        fig.delaxes(axes[i])
+
+    plt.tight_layout()
+    plt.show()
+
+class MultiRobotPlannerRunner:
+    def __init__(self, planner_class, config, name="Planner"):
+        self.planner_class = planner_class
+        self.config = config
+        self.name = name        
+
+    def run_benchmarks(self, bench_list, max_attempts=10,
+                       fps=30, steps_per_segment=5, save_animation=False, animation_dir="./animations"):
+        for idx, benchmark in enumerate(bench_list):
+            collisionChecker = benchmark.collisionChecker
+        
+            # flatten start, goal lists, sum up dof list to create one large configuration space
+            start = [number for coords in benchmark.startList for number in coords]
+            goal = [number for coords in benchmark.goalList for number in coords]
+            robot_dofs = benchmark.level # TODO maybe rename to dofs
+            dof = sum(benchmark.level) # TODO maybe rename to dofs
+            num_robots = collisionChecker.num_robots
+            
+            path_ids = []
+
+            for attempt in tqdm(range(1, max_attempts + 1), desc=f"AdaptedBasicPRM Benchmark {idx+1}/{len(bench_list)}"):
+                path_ids, graph = compute_prm_path(self.planner_class, collisionChecker, start, goal, self.config)
+                if path_ids:
+                    print(f"✔️ BasicPRM Benchmark {idx}: Pfad gefunden nach {attempt} Versuchen.")
+                    break
+            if not path_ids:
+                print(f"❌ BasicPRM Benchmark {idx}: Kein Pfad nach {max_attempts} Versuchen.")
+                continue
+
+            fig, ani = visualize_multi_robots(graph, path_ids, robot_dofs, num_robots, collisionChecker, benchmark, path=None)
+    
+            if save_animation:
+                os.makedirs(animation_dir, exist_ok=True)
+                file_name = f"{self.name}_MultiBenchmark_{idx}.mp4"
+                save_path = os.path.join(animation_dir, file_name)
+                print(f"Speichere Animation nach {save_path}...")
+                writer = animation.FFMpegWriter(fps=fps)
+                ani.save(save_path, writer=writer, dpi=200)
+                print(f"Animation gespeichert: {save_path}")
+            else:
+                display(HTML(ani.to_jshtml()))
+
+            plt.close(fig)
