@@ -495,8 +495,20 @@ class MultiRobotPlannerRunner:
         self.config = config
         self.name = name        
 
-    def run_benchmarks(self, bench_list, max_attempts=10,
-                       fps=30, steps_per_segment=5, save_animation=False, animation_dir="./animations"):
+    def calculate_optimal_radius(self, dim, limits, nodes):
+        free_space = 1
+
+        for index in range(0, len(limits), 2):
+            free_space *= (limits[index+1] - limits[index])
+
+        unit_sphere = math.pow(math.pi, dim/2) / math.gamma(dim / 2 + 1)
+        gamma = 2*pow((1 + 1/dim)*(free_space / unit_sphere), 1/dim)
+        return gamma * pow(math.log(nodes) / nodes, 1/dim)
+
+    def calculate_optimal_k_nearest(self, dim, nodes):
+        return int(math.e ** (1 + 1/dim) * math.log(nodes)) + 1
+
+    def run_benchmarks(self, bench_list, max_attempts=10, fps=30, steps_per_segment=5, save_animation=False, animation_dir="./animations"):
         for idx, benchmark in enumerate(bench_list):
             collisionChecker = benchmark.collisionChecker
         
@@ -506,16 +518,27 @@ class MultiRobotPlannerRunner:
             robot_dofs = benchmark.level # TODO maybe rename to dofs
             dof = sum(benchmark.level) # TODO maybe rename to dofs
             num_robots = collisionChecker.num_robots
+            flatted_limits = [item for sublist in collisionChecker.limits for item in sublist]
+            config_backup = self.config
+            
+            if 'radius' not in self.config and self.name == "BasicPRM":
+                radius = self.calculate_optimal_radius(dof, flatted_limits, self.config['numNodes'])
+                print("calculated optimal radius", radius)
+                self.config['radius'] = radius
+            elif 'kNearest' not in self.config and self.name == "LazyPRM":
+                kNearest = self.calculate_optimal_k_nearest(dof, self.config['initialRoadmapSize'])
+                print("calculated optimal kNearest", kNearest)
+                self.config['kNearest'] = kNearest
             
             path_ids = []
 
             for attempt in tqdm(range(1, max_attempts + 1), desc=f"{self.name} Benchmark {idx+1}/{len(bench_list)}"):
                 path_ids, graph = compute_prm_path(self.planner_class, collisionChecker, start, goal, self.config)
                 if path_ids:
-                    print(f"{self.name} Benchmark {idx}: Pfad gefunden nach {attempt} Versuchen.")
+                    print(f"{self.name} Benchmark {idx}: Pfad gefunden nach {attempt} Versuch(en).")
                     break
             if not path_ids:
-                print(f"{self.name} Benchmark {idx}: Kein Pfad nach {max_attempts} Versuchen.")
+                print(f"{self.name} Benchmark {idx}: Kein Pfad nach {max_attempts} Versuch(en).")
                 continue
 
             fig, ani = visualize_multi_robots(graph, path_ids, robot_dofs, num_robots, collisionChecker, benchmark, path=None)
@@ -532,3 +555,5 @@ class MultiRobotPlannerRunner:
                 display(HTML(ani.to_jshtml()))
 
             plt.close(fig)
+            
+            self.config = config_backup
