@@ -446,7 +446,7 @@ def run_benchmark(planner_cls, planner_name, config, benchmarks, max_attempts=10
 
 def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config, benchmarks, 
                                               max_attempts=10, max_scalings=5, scale_factor=1.5,
-                                              params_output_file='found_params.json', multi_robot=False):
+                                              params_output_file='results/found_params.json', multi_robot=False):
     """
     Führt Benchmarks durch und versucht bei Fehlschlag adaptive Skalierung.
     Speichert initiale Parameter jedes Verfahrens und alle erfolgreichen Läufe
