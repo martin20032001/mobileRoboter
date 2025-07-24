@@ -3,7 +3,6 @@ from numpy import linspace
 
 from shapely.geometry import Polygon, Point
 from shapely.affinity import rotate, translate
-from shapely.prepared import prep
 from shapely.plotting import plot_polygon
 from shapely.strtree import STRtree
 
@@ -21,7 +20,6 @@ class MultiMobileRobotCollisionChecker(CollisionChecker):
         # Collision Checker Optimizations
         self.static_polygons = list(scene.values())
         self.static_tree = STRtree(list(self.scene.values()))
-        self.prepared_static = [prep(poly) for poly in self.static_polygons]
 
     def getDim(self):
         return self.dim
@@ -54,7 +52,7 @@ class MultiMobileRobotCollisionChecker(CollisionChecker):
                 # Quick AABB check before expensive intersection test
                 if not self._bounds_overlap(robot.bounds, self.static_polygons[candidate_idx].bounds):
                     continue
-                if self.prepared_static[candidate_idx].intersects(robot):
+                if self.static_polygons[candidate_idx].intersects(robot):
                     return True
         
         # Check robot-robot collisions

@@ -74,6 +74,13 @@
                     "radius": 22,
                     "numNodes": 675
                 }
+            },
+            {
+                "Benchmark": 0,
+                "Parameters": {
+                    "radius": 10,
+                    "numNodes": 300
+                }
             }
         ]
     },
@@ -229,6 +236,13 @@
                 "Parameters": {
                     "numberOfGeneratedNodes": 750,
                     "testGoalAfterNumberOfNodes": 15
+                }
+            },
+            {
+                "Benchmark": 8,
+                "Parameters": {
+                    "numberOfGeneratedNodes": 1687,
+                    "testGoalAfterNumberOfNodes": 33
                 }
             },
             {
