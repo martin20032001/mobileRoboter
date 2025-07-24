@@ -1,6 +1,6 @@
 from shapely.geometry import box, Point, LineString, Polygon
 from shapely.affinity import translate
-from IPBenchmark import Benchmark
+from dependencies.IPBenchmark import Benchmark
 from IPMobileRobotCollisionChecker import MobileRobotCollisionChecker
 from HelperFunctions import generate_random_polygon_shape
 import random

@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 from tqdm import tqdm
 from HelperFunctions import translate, rotate, transform_robot, interpolate_path_equal_speed, make_animation, plot_configuration_space, compute_prm_path
-from IPTestSuiteMR import scenes, robots
-from IPBenchmark import Benchmark
+from dependencies.IPTestSuiteMR import scenes, robots
+from dependencies.IPBenchmark import Benchmark
 from IPMultiMobileRobotCollisionChecker import MultiMobileRobotCollisionChecker
 
 from IPython import get_ipython
@@ -509,13 +509,13 @@ class MultiRobotPlannerRunner:
             
             path_ids = []
 
-            for attempt in tqdm(range(1, max_attempts + 1), desc=f"AdaptedBasicPRM Benchmark {idx+1}/{len(bench_list)}"):
+            for attempt in tqdm(range(1, max_attempts + 1), desc=f"{self.name} Benchmark {idx+1}/{len(bench_list)}"):
                 path_ids, graph = compute_prm_path(self.planner_class, collisionChecker, start, goal, self.config)
                 if path_ids:
-                    print(f"✔️ BasicPRM Benchmark {idx}: Pfad gefunden nach {attempt} Versuchen.")
+                    print(f"{self.name} Benchmark {idx}: Pfad gefunden nach {attempt} Versuchen.")
                     break
             if not path_ids:
-                print(f"❌ BasicPRM Benchmark {idx}: Kein Pfad nach {max_attempts} Versuchen.")
+                print(f"{self.name} Benchmark {idx}: Kein Pfad nach {max_attempts} Versuchen.")
                 continue
 
             fig, ani = visualize_multi_robots(graph, path_ids, robot_dofs, num_robots, collisionChecker, benchmark, path=None)

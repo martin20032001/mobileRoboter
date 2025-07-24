@@ -7,13 +7,13 @@ License is based on Creative Commons: Attribution-NonCommercial 4.0 Internationa
 """
 
 from scipy.spatial import cKDTree
-from IPPRMBase import PRMBase
+from dependencies.IPPRMBase import PRMBase
 import numpy as np
 
 import networkx as nx
 import random
 
-from IPPerfMonitor import IPPerfMonitor
+from dependencies.IPPerfMonitor import IPPerfMonitor
 
 class RRTSimple(PRMBase):
 
@@ -90,7 +90,7 @@ class RRTSimple(PRMBase):
             
 
 from scipy.spatial import cKDTree
-from IPPRMBase import PRMBase
+from dependencies.IPPRMBase import PRMBase
 import numpy as np
 
 import networkx as nx

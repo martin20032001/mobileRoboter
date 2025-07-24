@@ -1083,7 +1083,7 @@ class PlannerRunner:
 
 
 def generate_animations(results_file, benchmark_idx, planners,
-                        save_dir="../animationen", fps=30,
+                        save_dir="animations", fps=30,
                         steps_per_segment=5, save=True, all_planners=True, selected_idx=0):
 
     rcParams['animation.embed_limit'] = 2000

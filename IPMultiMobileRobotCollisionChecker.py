@@ -7,8 +7,8 @@ from shapely.prepared import prep
 from shapely.plotting import plot_polygon
 from shapely.strtree import STRtree
 
-from IPEnvironment import CollisionChecker
-from IPPerfMonitor import IPPerfMonitor
+from dependencies.IPEnvironment import CollisionChecker
+from dependencies.IPPerfMonitor import IPPerfMonitor
 
 class MultiMobileRobotCollisionChecker(CollisionChecker):
     def __init__(self, num_robots: int, robot_shapes: list[Polygon], scene: dict, dofs: list[int], dim: int, limits=[[0, 22], [0, 22], [0, 360]]):

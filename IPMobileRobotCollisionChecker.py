@@ -1,7 +1,7 @@
 from shapely.geometry import Polygon
 from shapely.affinity import rotate, translate
-from IPEnvironment import CollisionChecker
-from IPPerfMonitor import IPPerfMonitor
+from dependencies.IPEnvironment import CollisionChecker
+from dependencies.IPPerfMonitor import IPPerfMonitor
 
 class MobileRobotCollisionChecker(CollisionChecker):
     def __init__(self, robot_shape: Polygon, scene: dict, limits=[[0, 22], [0, 22], [0, 360]]):

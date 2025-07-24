@@ -6,8 +6,8 @@ It gathers all visualizations of the investigated and explained planning algorit
 License is based on Creative Commons: Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) (pls. check: http://creativecommons.org/licenses/by-nc/4.0/)
 """
 
-from IPBenchmark import Benchmark 
-from IPEnvironment import CollisionChecker
+from dependencies.IPBenchmark import Benchmark 
+from dependencies.IPEnvironment import CollisionChecker
 from shapely.geometry import Point, Polygon, LineString
 import shapely.affinity
 import math
