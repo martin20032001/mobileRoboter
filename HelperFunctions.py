@@ -1019,11 +1019,17 @@ class PlannerRunner:
 
             # Suche Pfad mit mehreren Versuchen
             for attempt in tqdm(range(1, max_attempts + 1), desc=f"{self.name} Benchmark {idx+1}/{len(bench_list)}"):
+                t_start = time.time()
                 path_ids, graph = compute_prm_path(
                     self.planner_class, benchmark.collisionChecker, start, goal, self.config
                 )
+                t_end = time.time()
                 if path_ids:
-                    print(f"{self.name} Benchmark {idx}: Pfad gefunden nach {attempt} Versuchen.")
+                    search_time = t_end - t_start
+                    print(f"{self.name} Benchmark {idx}: Pfad gefunden nach {attempt} Versuch(en).")
+                    print(f"🔹 Suchzeit: {search_time:.3f} Sekunden")
+                    print(f"🔹 Roadmap-Größe: {graph.number_of_nodes()} Knoten, {graph.number_of_edges()} Kanten")
+                    print(f"🔹 Pfadpunkte: {len(path_ids)}")
                     break
             else:
                 print(f"{self.name} Benchmark {idx}: Kein Pfad nach {max_attempts} Versuchen.")

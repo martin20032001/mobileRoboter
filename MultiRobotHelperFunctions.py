@@ -2,6 +2,7 @@ import networkx as nx
 import random
 import math
 import os
+import time
 import numpy as np
 
 import matplotlib as mpl
@@ -523,19 +524,25 @@ class MultiRobotPlannerRunner:
             
             if 'radius' not in self.config and self.name == "BasicPRM":
                 radius = self.calculate_optimal_radius(dof, flatted_limits, self.config['numNodes'])
-                print("calculated optimal radius", radius)
+                print("Verwende optimalen Radius:", radius)
                 self.config['radius'] = radius
             elif 'kNearest' not in self.config and self.name == "LazyPRM":
                 kNearest = self.calculate_optimal_k_nearest(dof, self.config['initialRoadmapSize'])
-                print("calculated optimal kNearest", kNearest)
+                print("Verwende optimales kNearest:", kNearest)
                 self.config['kNearest'] = kNearest
             
             path_ids = []
 
             for attempt in tqdm(range(1, max_attempts + 1), desc=f"{self.name} Benchmark {idx+1}/{len(bench_list)}"):
+                t_start = time.time()
                 path_ids, graph = compute_prm_path(self.planner_class, collisionChecker, start, goal, self.config)
+                t_end = time.time()
                 if path_ids:
+                    search_time = t_end - t_start
                     print(f"{self.name} Benchmark {idx}: Pfad gefunden nach {attempt} Versuch(en).")
+                    print(f"🔹 Suchzeit: {search_time:.3f} Sekunden")
+                    print(f"🔹 Roadmap-Größe: {graph.number_of_nodes()} Knoten, {graph.number_of_edges()} Kanten")
+                    print(f"🔹 Pfadpunkte: {len(path_ids)}")
                     break
             if not path_ids:
                 print(f"{self.name} Benchmark {idx}: Kein Pfad nach {max_attempts} Versuch(en).")
