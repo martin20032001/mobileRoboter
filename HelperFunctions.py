@@ -552,7 +552,6 @@ def run_benchmark_adaptive_multi_try_sampling(planner_cls, planner_name, config,
         # 2) Adaptive Skalierung
         if not found:
             for scale_iter in range(1, max_scalings + 1):
-                print("apply adaptive scaling", scale_iter, "/", max_scalings+1, "to benchmark", idx)
                 scaled_cfg = _scale_config(config, scale_factor ** scale_iter)
                 for _ in range(max_attempts):
                     t0 = time.time()
