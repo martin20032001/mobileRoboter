@@ -923,7 +923,7 @@ def animate_robot_scene(
     anim = FuncAnimation(fig, update, frames=len(trajectory), interval=animation_speed, repeat=False)
 
     # Speichern als MP4
-    anim.save('robot_animation.mp4', writer=writer)
+    anim.save('animations/robot_animation.mp4', writer=writer)
     plt.close(fig)  # ❌ Figure-Handle schließen, damit kein zusätzliches Standbild angezeigt wird
     return HTML(anim.to_jshtml())
 
